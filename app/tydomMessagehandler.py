@@ -400,7 +400,7 @@ class TydomMessageHandler():
                 "_" + str(i["id_device"])
 
             if i["last_usage"] == 'shutter' or i["last_usage"] == 'klineShutter' or i["last_usage"] == 'light' or i["last_usage"] == 'window' or i["last_usage"] == 'windowFrench' or i["last_usage"] == 'windowSliding' or i[
-                    "last_usage"] == 'belmDoor' or i["last_usage"] == 'klineDoor' or i["last_usage"] == 'klineWindowFrench' or i["last_usage"] == 'klineWindowSliding' or i["last_usage"] == 'garage_door' or i["last_usage"] == 'gate':
+                    "last_usage"] == 'belmDoor' or i["last_usage"] == 'klineDoor' or i["last_usage"] == 'klineWindowFrench' or i["last_usage"] == 'klineWindowSliding' or i["last_usage"] == 'garage_door' or i["last_usage"] == 'gate' or i["last_usage"] == 'boiler' or i["last_usage"] == 'conso' or i["last_usage"] == 'interrupter' or i["last_usage"] == 'plug':
 
                 # logger.debug('%s %s'.format(i["id_endpoint"],i["name"]))
                 # device_name[i["id_endpoint"]] = i["name"]
@@ -408,11 +408,11 @@ class TydomMessageHandler():
                 device_type[device_unique_id] = i["last_usage"]
                 device_endpoint[device_unique_id] = i["id_endpoint"]
 
-            if i["last_usage"] == 'boiler' or i["last_usage"] == 'conso':
+            #if i["last_usage"] == 'boiler' or i["last_usage"] == 'conso':
                 # logger.debug('%s %s'.format(i["id_endpoint"],i["name"]))
-                device_name[device_unique_id] = i["name"]
-                device_type[device_unique_id] = i["last_usage"]
-                device_endpoint[device_unique_id] = i["id_endpoint"]
+            #    device_name[device_unique_id] = i["name"]
+            #    device_type[device_unique_id] = i["last_usage"]
+            #    device_endpoint[device_unique_id] = i["id_endpoint"]
 
             if i["last_usage"] == 'alarm':
                 # logger.debug('%s %s'.format(i["id_endpoint"], i["name"]))
