@@ -25,4 +25,4 @@ jobs:
       
       - name: Build & Push Image
         run: |
-          docker buildx build --file Dockerfile --push --platform linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64 --tag docker.io/${{ secrets.DOCKER_USERNAME }}/tydom2mqtt:latest
+          docker buildx build . --file Dockerfile --push --platform linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64 --tag docker.io/${{ secrets.DOCKER_USERNAME }}/tydom2mqtt:latest
