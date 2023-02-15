@@ -499,7 +499,9 @@ class TydomMessageHandler():
                     device_name = self.get_name_from_id(unique_id)
                     #device_type = self.get_type_from_id(unique_id)
 
-                    device_data = endpoint['data']
+                    device_data = endpoint['data'][0]
+
+                    logger.debug(device_data)
 
                     if device_data['validity'] == 'upToDate' :
 
