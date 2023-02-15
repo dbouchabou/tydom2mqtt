@@ -5,6 +5,7 @@ from alarm_control_panel import Alarm
 from sensors import sensor
 from switch import Switch
 from plug import Plug
+from sensors_2 import Sensor
 
 
 from http.server import BaseHTTPRequestHandler
@@ -364,6 +365,8 @@ class TydomMessageHandler():
                         parsed = json.loads(data)
                         # logger.debug(parsed)
                         await self.parse_devices_data(parsed=parsed)
+
+                        await self.parse_devices_data_2(parsed)
                     elif (msg_type == 'msg_cdata'):
                         parsed = json.loads(data)
                         # logger.debug(parsed)
@@ -481,12 +484,68 @@ class TydomMessageHandler():
 
         logger.info('Metadata configuration updated')
 
+    async def parse_devices_data_2(self, parsed):
+
+        for incoming_msg in parsed:
+            for endpoint in incoming_msg['endpoints']:
+                if endpoint['error'] == 0 and len(endpoint['data']) > 0:
+
+                    attr = {}
+
+                    device_id = incoming_msg['id']
+                    device_endpoint_id = endpoint['id']
+
+                    unique_id = str(device_endpoint_id) + "_" + str(device_id)
+                    device_name = self.get_name_from_id(unique_id)
+                    #device_type = self.get_type_from_id(unique_id)
+
+                    device_data = endpoint['data']
+
+                    if device_data['validity'] == 'upToDate' :
+
+                        attr['name'] = device_name
+                        attr['manufacturer'] = 'Delta Dore'
+                        attr['value'] = device_data['value']
+                        attr['device_id'] = device_id
+                        attr['endpoint_id'] = device_endpoint_id
+                        attr['data_name'] = device_data['name']
+                        attr['data_value'] = device_data['value']
+
+                        # Zigbee Plug
+                        # energyInstantTotElecP
+                        if device_data['name'] == 'energyInstantTotElecP' :
+                            attr['type'] = "sensor"
+                            attr['unit_of_measurement'] = 'W'
+                            attr['device_class'] = 'power'
+                            attr['state_class'] = 'measurement'
+                            attr['model'] = 'Sensor'
+                            attr['entity_name'] = 'Active power'
+
+                        # plugCmd
+
+
+                        if attr['type'] == "sensor" :
+                            device = Sensor(
+                                attr,
+                                mqtt=self.mqtt_client)
+
+                        #elif attr['type'] == "switch" :
+                        #    device = Switch(
+                        #        attr,
+                        #        mqtt=self.mqtt_client)
+                            
+                        
+                        await device.update()
+
+
+                        
+
+
     async def parse_devices_data(self, parsed):
         for i in parsed:
             for endpoint in i["endpoints"]:
                 if endpoint["error"] == 0 and len(endpoint["data"]) > 0:
                     try:
-                        attr_plug = {}
                         attr_alarm = {}
                         attr_alarm_details = {}
                         attr_cover = {}
@@ -498,8 +557,10 @@ class TydomMessageHandler():
                         attr_gate = {}
                         attr_boiler = {}
                         attr_light_details = {}
+
                         device_id = i["id"]
                         endpoint_id = endpoint["id"]
+
                         unique_id = str(endpoint_id) + "_" + str(device_id)
                         name_of_id = self.get_name_from_id(unique_id)
                         type_of_id = self.get_type_from_id(unique_id)
@@ -510,23 +571,6 @@ class TydomMessageHandler():
                         logger.debug("Name {}".format(name_of_id))
                         logger.debug("Type {}".format(type_of_id))
                         logger.debug("==========================")
-
-                        ####### dbouchabou version ####### 
-
-                        device_data = endpoint["data"]
-
-                        # Zigbee Plug
-                        if type_of_id == 'plug' and device_data["validity"] == 'upToDate' :
-                                attr_plug['name'] = name_of_id
-                                attr_plug['value'] = device_data["value"]
-
-                                plug = Plug(
-                                            attr_door['element_name'],
-                                            attr_plug,
-                                            mqtt=self.mqtt_client
-                                )
-                                
-                                await plug.update()
 
 
                         ##################################
