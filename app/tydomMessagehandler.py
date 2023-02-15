@@ -501,7 +501,8 @@ class TydomMessageHandler():
                     logger.debug(device_data)
 
                     if device_data['validity'] == 'upToDate' :
-                        
+                        device=None
+
                         attr = {}
                         attr['name'] = device_name
                         attr['manufacturer'] = 'Delta Dore'
@@ -533,13 +534,14 @@ class TydomMessageHandler():
                                 self.mqtt_client,
                                 False)
                             
-                            await device.update()
-                            
 
                         #elif attr['type'] == "switch" :
                         #    device = Switch(
                         #        attr,
                         #        mqtt=self.mqtt_client)
+
+                        if device != None :
+                            await device.update()
                             
                             
                             
