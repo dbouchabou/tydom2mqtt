@@ -491,14 +491,12 @@ class TydomMessageHandler():
                 if endpoint['error'] == 0 and len(endpoint['data']) > 0 :
 
                     attr = {}
-                    device = None
 
                     device_id = incoming_msg['id']
                     device_endpoint_id = endpoint['id']
 
                     unique_id = str(device_endpoint_id) + "_" + str(device_id)
                     device_name = self.get_name_from_id(unique_id)
-                    #device_type = self.get_type_from_id(unique_id)
 
                     device_data = endpoint['data'][0]
 
@@ -536,14 +534,15 @@ class TydomMessageHandler():
                                 self.mqtt_client,
                                 False)
                             
+                            await device.update()
+                            
 
                         #elif attr['type'] == "switch" :
                         #    device = Switch(
                         #        attr,
                         #        mqtt=self.mqtt_client)
                             
-                        if device != None :
-                            await device.update()
+                            
                             
 
 
