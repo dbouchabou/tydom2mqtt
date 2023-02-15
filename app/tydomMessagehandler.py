@@ -535,14 +535,16 @@ class TydomMessageHandler():
                                 attr,
                                 self.mqtt_client,
                                 False)
+                            
+                            await device.update()
 
                         #elif attr['type'] == "switch" :
                         #    device = Switch(
                         #        attr,
                         #        mqtt=self.mqtt_client)
                             
-                        if device != None :
-                            await device.update()
+                        #if device != None :
+                            
 
 
                         
