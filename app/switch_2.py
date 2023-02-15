@@ -43,7 +43,7 @@ class Switch_2:
 
         if (self.mqtt is not None) :
             self.mqtt.mqtt_client.publish(
-                (self.sensor_config_topic).lower(), 
+                (self.switch_config_topic).lower(), 
                 json.dumps(self.entity), 
                 qos=0, 
                 retain=True)  # sensor Config
