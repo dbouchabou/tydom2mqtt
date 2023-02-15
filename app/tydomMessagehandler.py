@@ -490,8 +490,6 @@ class TydomMessageHandler():
             for endpoint in incoming_msg['endpoints'] :
                 if endpoint['error'] == 0 and len(endpoint['data']) > 0 :
 
-                    attr = {}
-
                     device_id = incoming_msg['id']
                     device_endpoint_id = endpoint['id']
 
@@ -503,7 +501,8 @@ class TydomMessageHandler():
                     logger.debug(device_data)
 
                     if device_data['validity'] == 'upToDate' :
-
+                        
+                        attr = {}
                         attr['name'] = device_name
                         attr['manufacturer'] = 'Delta Dore'
                         attr['value'] = device_data['value']

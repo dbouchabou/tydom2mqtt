@@ -31,15 +31,16 @@ class Sensor:
 
         self.entity = {}
         self.entity['name'] = self.attr['entity_name']
-        self.entity['unique_id'] = "sensor.{}_{}.{}".format(self.attr['name'],self.attr['device_id'],self.attr['data_name'])
         self.entity['object_id'] = "sensor.{}_{}.{}".format(self.attr['name'],self.attr['device_id'],self.attr['data_name'])
+        self.entity['unique_id'] = "sensor.{}_{}.{}".format(self.attr['name'],self.attr['device_id'],self.attr['data_name'])
         self.entity['device_class'] = self.attr['device_class']
         self.entity['state_class'] = self.attr['state_class']
         self.entity['unit_of_measurement'] = self.attr['unit_of_measurement']
         self.entity['device'] = self.device
         self.entity['state_topic'] = self.sensor_topic
 
-    async def setup(self):
+    async def setup(self) :
+
         if (self.mqtt is not None) :
             self.mqtt.mqtt_client.publish(
                 (self.sensor_config_topic).lower(), 
@@ -53,11 +54,11 @@ class Sensor:
 
             await self.setup()  # Publish config
 
-            if self.is_binary_sensor :
-                if self.attr['data_value'] == True :
-                    self.attr['data_value'] = 'ON'
-                elif self.attr['data_value'] == False :
-                    self.attr['data_value'] = 'OFF'
+            #if self.is_binary_sensor :
+            #    if self.attr['data_value'] == True :
+            #        self.attr['data_value'] = 'ON'
+            #    elif self.attr['data_value'] == False :
+            #        self.attr['data_value'] = 'OFF'
 
 
             self.mqtt.mqtt_client.publish(
