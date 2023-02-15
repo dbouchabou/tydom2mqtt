@@ -484,13 +484,14 @@ class TydomMessageHandler():
 
         logger.info('Metadata configuration updated')
 
-    async def parse_devices_data_2(self, parsed):
+    async def parse_devices_data_2(self, parsed) :
 
-        for incoming_msg in parsed:
-            for endpoint in incoming_msg['endpoints']:
-                if endpoint['error'] == 0 and len(endpoint['data']) > 0:
+        for incoming_msg in parsed :
+            for endpoint in incoming_msg['endpoints'] :
+                if endpoint['error'] == 0 and len(endpoint['data']) > 0 :
 
                     attr = {}
+                    device = None
 
                     device_id = incoming_msg['id']
                     device_endpoint_id = endpoint['id']
@@ -540,8 +541,8 @@ class TydomMessageHandler():
                         #        attr,
                         #        mqtt=self.mqtt_client)
                             
-                        
-                        await device.update()
+                        if device != None :
+                            await device.update()
 
 
                         
