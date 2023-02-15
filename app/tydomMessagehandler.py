@@ -531,6 +531,8 @@ class TydomMessageHandler():
                             attr['type'] = "switch"
                             attr['model'] = 'Sensor'
                             attr['entity_name'] = 'Switch'
+                            attr['cmd_on'] = 'ON'
+                            attr['cmd_off'] = 'OFF'
 
 
                         if attr['type'] == "sensor" :

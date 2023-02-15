@@ -14,6 +14,7 @@ from alarm_control_panel import Alarm
 from light import Light
 from boiler import Boiler
 from switch import Switch
+from switch_2 import Switch_2
 from logger import logger
 import logging
 
@@ -289,6 +290,20 @@ class MQTT_Hassio():
 
             await Switch.put_level_gate(tydom_client=self.tydom, device_id=device_id, switch_id=endpoint_id,
                                         level=str(value))
+        elif "homeassistant/switch/tydom" in str(topic) :
+
+            logger.info(
+                'Incoming MQTT set request : %s %s',
+                topic,
+                json.loads(payload))
+            
+
+            # logger.debug(value)
+            device_id = (topic.split("/"))[3]  # extract ids from mqtt
+            name = (topic.split("/"))[4]
+            value = json.loads(payload)
+
+            await Switch_2.put(self.tydom, device_id, device_id, name, value)
 
         else:
             pass
