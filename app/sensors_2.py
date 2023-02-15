@@ -10,10 +10,14 @@ sensor_topic = "homeassistant/sensor/tydom/{id}/state"
 
 class Sensor:
 
-    def __init__(self, attr,
-                  mqtt=None):
+    def __init__(self, 
+                attr,
+                mqtt=None,
+                binary = False):
         self.attr = attr
         self.mqtt = mqtt
+        self.is_binary_sensor = binary
+
         self.sensor_topic = sensor_topic.format(id = self.attr['device_id'])
         self.sensor_config_topic = sensor_config_topic.format(id = self.attr['device_id'])
 
@@ -26,7 +30,7 @@ class Sensor:
 
         self.entity = {}
         self.entity['name'] = self.attr['entity_name']
-        self.entity['unique_id'] = "sensor.{}_{}.{}".format(self.attr['name'],self.attr['device_id'],self.attr['data_name'])
+        self.entity['object_id'] = "sensor.{}_{}.{}".format(self.attr['name'],self.attr['device_id'],self.attr['data_name'])
         self.entity['device_class'] = self.attr['device_class']
         self.entity['state_class'] = self.attr['state_class']
         self.entity['unit_of_measurement'] = self.attr['unit_of_measurement']
@@ -45,10 +49,11 @@ class Sensor:
 
             await self.setup()  # Publish config
 
-            if self.attr['data_value'] == 'true':
-                self.attr['data_value'] = 'ON'
-            elif self.attr['data_value'] == 'false':
-                self.attr['data_value'] = 'OFF'
+            if  self.is_binary_sensor :
+                if self.attr['data_value'] == True:
+                    self.attr['data_value'] = 'ON'
+                elif self.attr['data_value'] == Falses:
+                    self.attr['data_value'] = 'OFF'
 
 
             self.mqtt.mqtt_client.publish(

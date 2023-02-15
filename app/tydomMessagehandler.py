@@ -513,7 +513,7 @@ class TydomMessageHandler():
                         attr['data_name'] = device_data['name']
                         attr['data_value'] = device_data['value']
 
-                        logger.debug("PARSE DATA 2 VALUE :".format(attr['data_value']))
+                        logger.debug("PARSE DATA 2 VALUE : {}".format(attr['data_value']))
 
                         # Zigbee Plug
                         # energyInstantTotElecP
@@ -531,7 +531,8 @@ class TydomMessageHandler():
                         if attr['type'] == "sensor" :
                             device = Sensor(
                                 attr,
-                                mqtt=self.mqtt_client)
+                                self.mqtt_client,
+                                False)
 
                         #elif attr['type'] == "switch" :
                         #    device = Switch(
