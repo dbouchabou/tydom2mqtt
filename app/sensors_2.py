@@ -31,8 +31,7 @@ class Sensor:
 
         self.entity = {}
         self.entity['name'] = self.attr['entity_name']
-        #self.entity['unique_id '] = "sensor.{}_{}.{}".format(self.attr['name'],self.attr['device_id'],self.attr['data_name'])
-        self.entity['object_id'] = "sensor.{}_{}.{}".format(self.attr['name'],self.attr['device_id'],self.attr['data_name'])
+        self.entity['unique_id '] = "sensor.{}_{}.{}".format(self.attr['name'],self.attr['device_id'],self.attr['data_name'])
         self.entity['device_class'] = self.attr['device_class']
         self.entity['state_class'] = self.attr['state_class']
         self.entity['unit_of_measurement'] = self.attr['unit_of_measurement']
@@ -53,7 +52,7 @@ class Sensor:
 
             await self.setup()  # Publish config
 
-            if  self.is_binary_sensor :
+            if self.is_binary_sensor :
                 if self.attr['data_value'] == True :
                     self.attr['data_value'] = 'ON'
                 elif self.attr['data_value'] == False :
@@ -67,5 +66,5 @@ class Sensor:
         
             logger.info(
                 "Sensor created / updated : %s %s",
-                self.entity['object_id'],
+                self.entity['unique_id'],
                 self.attr['data_value'])
