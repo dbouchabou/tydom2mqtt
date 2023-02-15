@@ -23,6 +23,8 @@ tydom_topic = "+/tydom/#"
 refresh_topic = "homeassistant/requests/tydom/refresh"
 hostname = socket.gethostname()
 
+def test_on_message(client, topic, payload, qos, properties):
+    logger.debug('RECV MSG:', topic, payload.decode(), properties)
 
 # STOP = asyncio.Event()
 class MQTT_Hassio():
@@ -55,7 +57,8 @@ class MQTT_Hassio():
             # logger.info(client)
 
             client.on_connect = self.on_connect
-            client.on_message = self.on_message
+            #client.on_message = self.on_message
+            client.on_message = test_on_message
             client.on_disconnect = self.on_disconnect
             # client.on_subscribe = self.on_subscribe
 
@@ -81,8 +84,12 @@ class MQTT_Hassio():
         except Exception as e:
             logger.info("Error on connect : %s", e)
 
-    async def on_message(self, client, topic, payload, qos, properties):
+
+    async def on_message(self, client, topic, payload, qos, properties) :
+        
         logger.debug('Incoming MQTT message : %s %s', topic, payload)
+
+
         if ('update' in str(topic)):
             #        if "update" in topic:
             logger.info('Incoming MQTT update request : ', topic, payload)
@@ -292,7 +299,7 @@ class MQTT_Hassio():
                                         level=str(value))
         elif "homeassistant/switch/tydom" in str(topic) :
 
-            logger.info(
+            logger.debug(
                 'Incoming MQTT set request : %s %s',
                 topic,
                 json.loads(payload))
