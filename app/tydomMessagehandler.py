@@ -4,8 +4,9 @@ from boiler import Boiler
 from alarm_control_panel import Alarm
 from sensors import sensor
 from switch import Switch
-from plug import Plug
+
 from sensors_2 import Sensor
+from switch_2 import Switch_2
 
 
 from http.server import BaseHTTPRequestHandler
@@ -517,7 +518,7 @@ class TydomMessageHandler():
 
                         # Zigbee Plug
                         # energyInstantTotElecP
-                        if device_data['name'] == 'energyInstantTotElecP' :
+                        if attr['data_name'] == 'energyInstantTotElecP' :
                             attr['type'] = "sensor"
                             attr['unit_of_measurement'] = 'W'
                             attr['device_class'] = 'power'
@@ -526,6 +527,10 @@ class TydomMessageHandler():
                             attr['entity_name'] = 'Active power'
 
                         # plugCmd
+                        if attr['data_name'] == 'plugCmd' :
+                            attr['type'] = "switch"
+                            attr['model'] = 'Sensor'
+                            attr['entity_name'] = 'Switch'
 
 
                         if attr['type'] == "sensor" :
@@ -533,12 +538,12 @@ class TydomMessageHandler():
                                 attr,
                                 self.mqtt_client,
                                 False)
-                            
 
-                        #elif attr['type'] == "switch" :
-                        #    device = Switch(
-                        #        attr,
-                        #        mqtt=self.mqtt_client)
+                        elif attr['type'] == "switch" :
+                            device = Switch_2(
+                                attr,
+                                self.mqtt_client,
+                                False)
 
                         if device != None :
                             await device.update()

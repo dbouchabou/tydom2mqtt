@@ -1,26 +1,28 @@
 import json
+from sensors import sensor
 from logger import logger
 import logging
 
 logger = logging.getLogger(__name__)
+switch_config_topic = "homeassistant/switch/tydom/{id}/config"
+switch_state_topic = "homeassistant/switch/tydom/{id}/state"
+switch_attributes_topic = "homeassistant/switch/tydom/{id}/attributes"
+switch_command_topic = "homeassistant/switch/tydom/{id}/set"
 
-sensor_config_topic = "homeassistant/sensor/tydom/{id}/config"
-sensor_topic = "homeassistant/sensor/tydom/{id}/state"
 
-
-class Sensor:
-
+class Switch_2:
     def __init__(self, 
                 attr,
-                mqtt = None,
-                binary = False) :
+                mqtt = None) :
 
         self.attr = attr
         self.mqtt = mqtt
-        self.is_binary_sensor = binary
 
-        self.sensor_topic = sensor_topic.format(id = self.attr['device_id'])
-        self.sensor_config_topic = sensor_config_topic.format(id = self.attr['device_id'])
+        self.switch_config_topic = switch_config_topic.format(id = self.attr['device_id'])
+        self.switch_state_topic = switch_state_topic.format(id = self.attr['device_id'])
+        self.switch_attributes_topic = switch_attributes_topic.format(id = self.attr['device_id'])
+        self.switch_command_topic = switch_command_topic.format(id = self.attr['device_id'])
+        
 
         self.device = {}
         self.device['manufacturer'] = self.attr['manufacturer']
@@ -33,11 +35,9 @@ class Sensor:
         self.entity['name'] = self.attr['entity_name']
         self.entity['object_id'] = "{}_{}_{}".format(self.attr['name'],self.attr['device_id'],self.attr['entity_name'])
         self.entity['unique_id'] = "{}_{}_{}".format(self.attr['name'],self.attr['device_id'],self.attr['entity_name'])
-        self.entity['device_class'] = self.attr['device_class']
-        self.entity['state_class'] = self.attr['state_class']
-        self.entity['unit_of_measurement'] = self.attr['unit_of_measurement']
         self.entity['device'] = self.device
-        self.entity['state_topic'] = self.sensor_topic
+        self.entity['state_topic'] = self.switch_state_topic
+        self.entity['command_topic'] = self.switch_command_topic
 
     async def setup(self) :
 
@@ -54,17 +54,12 @@ class Sensor:
 
             await self.setup()  # Publish config
 
-            if self.is_binary_sensor :
-                if self.attr['data_value'] == True :
-                    self.attr['data_value'] = 'ON'
-                elif self.attr['data_value'] == False :
-                    self.attr['data_value'] = 'OFF'
-
 
             self.mqtt.mqtt_client.publish(
-                self.sensor_topic,
+                self.switch_state_topic,
                 self.attr['data_value'],
-                qos=0)  # sensor State
+                qos=0,
+                retain=True)  # Switch State
         
             logger.info(
                 "Sensor created / updated : %s %s",
