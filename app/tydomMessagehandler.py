@@ -512,6 +512,7 @@ class TydomMessageHandler():
                         attr['endpoint_id'] = device_endpoint_id
                         attr['data_name'] = device_data['name']
                         attr['data_value'] = device_data['value']
+                        attr['type'] = None
 
                         logger.debug("PARSE DATA 2 VALUE : {}".format(attr['data_value']))
 

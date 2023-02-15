@@ -63,5 +63,5 @@ class Sensor:
         
             logger.info(
                 "Sensor created / updated : %s %s",
-                self.entity['unique_id'],
+                self.entity['object_id'],
                 self.attr['data_value'])
