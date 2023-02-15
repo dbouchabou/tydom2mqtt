@@ -4,6 +4,7 @@ from boiler import Boiler
 from alarm_control_panel import Alarm
 from sensors import sensor
 from switch import Switch
+from plug import Plug
 
 
 from http.server import BaseHTTPRequestHandler
@@ -485,6 +486,7 @@ class TydomMessageHandler():
             for endpoint in i["endpoints"]:
                 if endpoint["error"] == 0 and len(endpoint["data"]) > 0:
                     try:
+                        attr_plug = {}
                         attr_alarm = {}
                         attr_alarm_details = {}
                         attr_cover = {}
@@ -509,6 +511,25 @@ class TydomMessageHandler():
                         logger.debug("Type {}".format(type_of_id))
                         logger.debug("==========================")
 
+                        ####### dbouchabou version ####### 
+
+                        device_data = endpoint["data"]
+
+                        # Zigbee Plug
+                        if type_of_id == 'plug' and device_data["validity"] == 'upToDate' :
+                                attr_plug['name'] = name_of_id
+                                attr_plug['value'] = device_data["value"]
+
+                                plug = Plug(
+                                            attr_door['element_name'],
+                                            attr_plug,
+                                            mqtt=self.mqtt_client
+                                )
+                                
+                                await plug.update()
+
+
+                        ##################################
                         for elem in endpoint["data"]:
                             logger.debug("CURRENT ELEM={}".format(elem))
                             # endpoint_id = None
