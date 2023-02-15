@@ -513,6 +513,8 @@ class TydomMessageHandler():
                         attr['data_name'] = device_data['name']
                         attr['data_value'] = device_data['value']
 
+                        logger.debug("PARSE DATA 2 VALUE :".format(attr['data_value']))
+
                         # Zigbee Plug
                         # energyInstantTotElecP
                         if device_data['name'] == 'energyInstantTotElecP' :

@@ -45,9 +45,9 @@ class Sensor:
 
             await self.setup()  # Publish config
 
-            if self.attr['data_value'] == True:
+            if self.attr['data_value'] == 'true':
                 self.attr['data_value'] = 'ON'
-            elif self.attr['data_value'] == False:
+            elif self.attr['data_value'] == 'false':
                 self.attr['data_value'] = 'OFF'
 
 
