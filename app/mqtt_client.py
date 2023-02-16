@@ -84,14 +84,14 @@ class MQTT_Hassio():
 
     async def on_message(self, client, topic, payload, qos, properties) :
         
-        logger.debug('Incoming MQTT message : XX%sXX XX%sXX', topic, str(payload).strip('b').strip("'"))
+        logger.debug('Incoming MQTT message : %s %s', topic, str(payload).strip('b').strip("'"))
 
         if str(topic).find('plugCmd') != -1 :
 
             logger.debug(
                 'Incoming MQTT plugCmd request : %s %s',
                 topic,
-                json.loads(payload))
+                str(payload).strip('b').strip("'"))
 
             device_id = (topic.split("/"))[3]  # extract ids from mqtt
             value = str(payload).strip('b').strip("'")
