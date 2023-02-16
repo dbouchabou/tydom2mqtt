@@ -4,7 +4,7 @@ from logger import logger
 import logging
 
 logger = logging.getLogger(__name__)
-switch_config_topic = "homeassistant/switch/tydom/{id}/config"
+switch_config_topic = "homeassistant/switch/tydom/{id}_{endpoint_id}/config"
 switch_state_topic = "homeassistant/switch/tydom/{id}/{endpoint_id}/state"
 switch_attributes_topic = "homeassistant/switch/tydom/{id}/{endpoint_id}/attributes"
 switch_command_topic = "homeassistant/switch/tydom/{id}/{endpoint_id}/command/{cmd}"
@@ -23,7 +23,7 @@ class Switch_2:
         self.attr = attr
         self.mqtt = mqtt
 
-        self.switch_config_topic = switch_config_topic.format(id = self.attr['device_id'])
+        self.switch_config_topic = switch_config_topic.format(id = self.attr['device_id'], endpoint_id = self.attr['endpoint_id'])
         self.switch_state_topic = switch_state_topic.format(id = self.attr['device_id'], endpoint_id = self.attr['endpoint_id'])
         self.switch_attributes_topic = switch_attributes_topic.format(id = self.attr['device_id'], endpoint_id = self.attr['endpoint_id'])
         self.switch_command_topic = switch_command_topic.format(id = self.attr['device_id'], endpoint_id = self.attr['endpoint_id'], cmd = self.attr['data_name'])
