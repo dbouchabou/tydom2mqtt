@@ -294,20 +294,19 @@ class MQTT_Hassio():
 
             await Switch.put_level_gate(tydom_client=self.tydom, device_id=device_id, switch_id=endpoint_id,
                                         level=str(value))
-        elif "homeassistant/switch/tydom" in str(topic) :
+        elif "plugCmd" in str(topic) :
 
             logger.debug(
-                'Incoming MQTT set request : %s %s',
+                'Incoming MQTT plugCmd request : %s %s',
                 topic,
                 json.loads(payload))
             
 
             # logger.debug(value)
             device_id = (topic.split("/"))[3]  # extract ids from mqtt
-            name = (topic.split("/"))[4]
-            value = json.loads(payload)
+            value = str(payload).strip('b').strip("'")
 
-            await Switch_2.put(self.tydom, device_id, device_id, name, value)
+            await Switch_2.put(self.tydom, device_id, device_id, "plugCmd ", value)
 
         else:
             pass
