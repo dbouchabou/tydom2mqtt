@@ -86,21 +86,7 @@ class MQTT_Hassio():
         
         logger.debug('Incoming MQTT message : %s %s', topic, str(payload).strip('b').strip("'"))
 
-        if str(topic).find('plugCmd') != -1 :
-
-            logger.debug(
-                'Incoming MQTT plugCmd request : %s %s',
-                topic,
-                str(payload).strip('b').strip("'"))
-
-            device_id = (topic.split("/"))[3]  # extract ids from mqtt
-            value = str(payload).strip('b').strip("'")
-
-            await Switch_2.put(self.tydom, device_id, device_id, "plugCmd", value)
-        else: 
-            logger.debug('MQTT message : NOT FOUND')
-
-
+        
         if ('update' in str(topic)):
             #        if "update" in topic:
             logger.info('Incoming MQTT update request : ', topic, payload)
@@ -309,6 +295,17 @@ class MQTT_Hassio():
             await Switch.put_level_gate(tydom_client=self.tydom, device_id=device_id, switch_id=endpoint_id,
                                         level=str(value))
 
+        elif str(topic).find('plugCmd') != -1 :
+
+            logger.debug(
+                'Incoming MQTT plugCmd request : %s %s',
+                topic,
+                str(payload).strip('b').strip("'"))
+
+            device_id = (topic.split("/"))[3]  # extract id from mqtt
+            value = str(payload).strip('b').strip("'")
+
+            await Switch_2.send(self.tydom, device_id, device_id, "plugCmd", value)
 
         else:
             pass

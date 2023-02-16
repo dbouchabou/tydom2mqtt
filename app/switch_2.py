@@ -67,7 +67,7 @@ class Switch_2:
                 self.attr['data_value'])
     
     @staticmethod
-    async def put(tydom_client, device_id, endpoint_id, name, value) :
+    async def send(tydom_client, device_id, endpoint_id, name, value) :
         logger.info("%s %s %s", device_id, name, value)
         if not (value == '') :
             await tydom_client.put_devices_data(device_id, endpoint_id, name, value)
