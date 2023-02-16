@@ -23,9 +23,6 @@ tydom_topic = "+/tydom/#"
 refresh_topic = "homeassistant/requests/tydom/refresh"
 hostname = socket.gethostname()
 
-def test_on_message(client, topic, payload, qos, properties):
-    logger.debug('RECV MSG:', topic, payload.decode(), properties)
-
 # STOP = asyncio.Event()
 class MQTT_Hassio():
 
@@ -57,8 +54,7 @@ class MQTT_Hassio():
             # logger.info(client)
 
             client.on_connect = self.on_connect
-            #client.on_message = self.on_message
-            client.on_message = test_on_message
+            client.on_message = self.on_message
             client.on_disconnect = self.on_disconnect
             # client.on_subscribe = self.on_subscribe
 
@@ -81,6 +77,7 @@ class MQTT_Hassio():
             # client.subscribe('homeassistant/#', qos=0)
             client.subscribe('homeassistant/status', qos=0)
             client.subscribe(tydom_topic, qos=0)
+            client.subscribe("homeassistant/+/tydom/#", qos=0)
         except Exception as e:
             logger.info("Error on connect : %s", e)
 
