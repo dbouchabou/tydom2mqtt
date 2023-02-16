@@ -565,7 +565,9 @@ class TydomMessageHandler():
                             pass
 
                         if device != None :
+                            logger.debug("PARSE DATA 2 : DEVICE UPDATE {}".format(attr['type']))
                             await device.update()
+                            logger.debug("PARSE DATA 2 : DEVICE UPDATE OK")
                             
                             
                             

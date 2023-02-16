@@ -47,17 +47,24 @@ class Sensor_2:
     async def setup(self) :
 
         if (self.mqtt is not None) :
+
+            logger.debug("SENSOR 2 : START SETUP ")
+
             self.mqtt.mqtt_client.publish(
                 (self.sensor_config_topic).lower(), 
                 json.dumps(self.entity), 
                 qos=0, 
                 retain=True)  # sensor Config
 
+            logger.debug("SENSOR 2 : SETUP OK")
+
     async def update(self) :
 
         if (self.mqtt is not None) :
 
             await self.setup()  # Publish config
+
+            logger.debug("SENSOR 2 : START UPDATE ")
 
             if self.attr['is_binary'] :
                 if self.attr['data_value'] == True :

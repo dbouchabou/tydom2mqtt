@@ -42,11 +42,14 @@ class Switch_2:
     async def setup(self) :
 
         if (self.mqtt is not None) :
+            logger.debug("SWITCH 2 : START SETUP ")
             self.mqtt.mqtt_client.publish(
                 (self.switch_config_topic).lower(), 
                 json.dumps(self.entity), 
                 qos=0, 
                 retain=True)  # sensor Config
+            
+            logger.debug("SWITCH 2 : SETUP OK")
 
     async def update(self) :
 
@@ -54,6 +57,7 @@ class Switch_2:
 
             await self.setup()  # Publish config
 
+            logger.debug("SWITCH 2 : START UPDATE ")
 
             self.mqtt.mqtt_client.publish(
                 self.switch_state_topic,
