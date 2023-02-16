@@ -8,6 +8,7 @@ from switch import Switch
 from sensors_2 import Sensor_2
 from switch_2 import Switch_2
 from binary_sensors_2 import Binary_Sensor_2
+from light_2 import Light_2
 
 
 from http.server import BaseHTTPRequestHandler
@@ -547,6 +548,13 @@ class TydomMessageHandler():
                             attr['model'] = 'DO'
                             attr['entity_name'] = 'Opening'
 
+                        # Tyxia 5610 module
+                        elif attr['data_name'] == 'level' :
+                            attr['type'] = "light"
+                            attr['model'] = 'Module'
+                            attr['entity_name'] = 'Switch'
+                            attr['cmd_label'] = 'levelCmd'
+
 
                         if attr['type'] == "sensor" :
                             device = Sensor_2(
@@ -562,6 +570,12 @@ class TydomMessageHandler():
                             device = Binary_Sensor_2(
                                 attr,
                                 self.mqtt_client)
+
+                        elif attr['type'] == "light" :
+                            device = Light_2(
+                                attr,
+                                self.mqtt_client)
+                                
 
 
                         if device != None :
