@@ -84,9 +84,9 @@ class MQTT_Hassio():
 
     async def on_message(self, client, topic, payload, qos, properties) :
         
-        logger.debug('Incoming MQTT message : %s %s', topic, payload)
+        logger.debug('Incoming MQTT message : XX%sXX XX%sXX', topic, str(payload).strip('b').strip("'"))
 
-        if 'plugcmd' in str(topic).lower() :
+        if str(topic).find('plugCmd') != -1 :
 
             logger.debug(
                 'Incoming MQTT plugCmd request : %s %s',
@@ -97,6 +97,8 @@ class MQTT_Hassio():
             value = str(payload).strip('b').strip("'")
 
             await Switch_2.put(self.tydom, device_id, device_id, "plugCmd ", value)
+        else: 
+            logger.debug('MQTT message : NOT FOUND')
 
 
         if ('update' in str(topic)):
