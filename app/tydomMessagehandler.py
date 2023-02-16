@@ -368,6 +368,7 @@ class TydomMessageHandler():
                         # await self.parse_devices_data(parsed=parsed)
 
                         await self.parse_devices_data_2(parsed)
+                        
                     elif (msg_type == 'msg_cdata'):
                         parsed = json.loads(data)
                         # logger.debug(parsed)
@@ -529,19 +530,19 @@ class TydomMessageHandler():
                             attr['is_binary'] = False
 
                         # plugCmd
-                        if attr['data_name'] == 'plugCmd' :
+                        elif attr['data_name'] == 'plugCmd' :
                             attr['type'] = "switch"
                             attr['model'] = 'Sensor'
                             attr['entity_name'] = 'Switch'
 
                         # Interrupter
-                        if attr['data_name'] == 'action' :
+                        elif attr['data_name'] == 'action' :
                             attr['type'] = "switch"
                             attr['model'] = 'Interrupter'
                             attr['entity_name'] = 'Switch'
 
                         # D.O
-                        if attr['data_name'] == 'intrusionDetect' :
+                        elif attr['data_name'] == 'intrusionDetect' :
                             attr['type'] = "sensor"
                             attr['unit_of_measurement'] = None
                             attr['device_class'] = 'opening'
