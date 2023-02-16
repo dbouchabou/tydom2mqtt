@@ -4,14 +4,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-sensor_config_topic = "homeassistant/sensor/tydom/{id}_{endpoint_id}/config"
-sensor_topic = "homeassistant/sensor/tydom/{id}/{endpoint_id}/state"
-
-#sensor_config_topic = "homeassistant/sensor/tydom/{id}/config"
-#sensor_topic = "homeassistant/sensor/tydom/{id}/state"
+sensor_config_topic = "homeassistant/binary_sensor/tydom/{id}_{endpoint_id}/config"
+sensor_topic = "homeassistant/binary_sensor/tydom/{id}/{endpoint_id}/state"
 
 
-class Sensor_2:
+class Binary_Sensor_2:
 
     def __init__(self, 
                 attr,
@@ -71,6 +68,13 @@ class Sensor_2:
             await self.setup()  # Publish config
 
             logger.debug("SENSOR 2 : START UPDATE ")
+
+            
+            if self.attr['data_value'] == True :
+                self.attr['data_value'] = 'ON'
+            elif self.attr['data_value'] == False :
+                self.attr['data_value'] = 'OFF'
+
 
             self.mqtt.mqtt_client.publish(
                 self.sensor_topic,

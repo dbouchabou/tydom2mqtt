@@ -7,6 +7,7 @@ from switch import Switch
 
 from sensors_2 import Sensor_2
 from switch_2 import Switch_2
+from binary_sensors_2 import Binary_Sensor_2
 
 
 from http.server import BaseHTTPRequestHandler
@@ -514,7 +515,6 @@ class TydomMessageHandler():
                         attr['data_name'] = device_data['name']
                         attr['data_value'] = device_data['value']
                         attr['type'] = None # Default Value
-                        attr['is_binary'] = False # Default Value
 
                         logger.debug("PARSE DATA 2 VALUE : {}".format(attr['data_value']))
 
@@ -542,11 +542,10 @@ class TydomMessageHandler():
 
                         # D.O
                         elif attr['data_name'] == 'intrusionDetect' :
-                            attr['type'] = "sensor"
+                            attr['type'] = "binary_sensor"
                             attr['device_class'] = 'opening'
                             attr['model'] = 'DO'
                             attr['entity_name'] = 'Opening'
-                            attr['is_binary'] = True
 
 
                         if attr['type'] == "sensor" :
@@ -556,6 +555,11 @@ class TydomMessageHandler():
 
                         elif attr['type'] == "switch" :
                             device = Switch_2(
+                                attr,
+                                self.mqtt_client)
+                        
+                        elif attr['type'] == "binary_sensor" :
+                            device = Binary_Sensor_2(
                                 attr,
                                 self.mqtt_client)
 
