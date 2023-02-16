@@ -365,7 +365,7 @@ class TydomMessageHandler():
                     elif (msg_type == 'msg_data'):
                         parsed = json.loads(data)
                         # logger.debug(parsed)
-                        await self.parse_devices_data(parsed=parsed)
+                        # await self.parse_devices_data(parsed=parsed)
 
                         await self.parse_devices_data_2(parsed)
 
@@ -500,7 +500,7 @@ class TydomMessageHandler():
 
                     device_data = endpoint['data'][0]
 
-                    logger.debug(device_data)
+                    logger.debug("Device DATA : {}".format(device_data))
 
                     if device_data['validity'] == 'upToDate' :
                         device=None
@@ -527,7 +527,6 @@ class TydomMessageHandler():
                             attr['state_class'] = 'measurement'
                             attr['model'] = 'Sensor'
                             attr['entity_name'] = 'Active power'
-                            attr['is_binary'] = False
 
                         # plugCmd
                         elif attr['data_name'] == 'plugCmd' :
@@ -544,9 +543,7 @@ class TydomMessageHandler():
                         # D.O
                         elif attr['data_name'] == 'intrusionDetect' :
                             attr['type'] = "sensor"
-                            attr['unit_of_measurement'] = None
                             attr['device_class'] = 'opening'
-                            attr['state_class'] = None
                             attr['model'] = 'DO'
                             attr['entity_name'] = 'Opening'
                             attr['is_binary'] = True
@@ -561,9 +558,7 @@ class TydomMessageHandler():
                             device = Switch_2(
                                 attr,
                                 self.mqtt_client)
-                        
-                        elif attr['type'] == "button" :
-                            pass
+
 
                         if device != None :
                             logger.debug("PARSE DATA 2 : DEVICE UPDATE {}".format(attr['type']))

@@ -38,13 +38,13 @@ class Sensor_2:
         self.entity['object_id'] = "{}_{}_{}_{}".format(self.attr['name'],self.attr['device_id'],self.attr['endpoint_id'],self.attr['entity_name'])
         self.entity['unique_id'] = "{}_{}_{}_{}".format(self.attr['name'],self.attr['device_id'],self.attr['endpoint_id'],self.attr['entity_name'])
 
-        if self.attr['device_class'] != None :
+        if 'device_class' in self.attr.keys():
             self.entity['device_class'] = self.attr['device_class']
 
-        if self.attr['state_class'] != None :
+        if 'state_class' in self.attr.keys():
             self.entity['state_class'] = self.attr['state_class']
         
-        if self.attr['unit_of_measurement'] != None :
+        if 'unit_of_measurement' in self.attr.keys():
             self.entity['unit_of_measurement'] = self.attr['unit_of_measurement']
         
         self.entity['device'] = self.device
@@ -72,11 +72,11 @@ class Sensor_2:
 
             logger.debug("SENSOR 2 : START UPDATE ")
 
-            if self.attr['is_binary'] :
-                if self.attr['data_value'] == True :
-                    self.attr['data_value'] = 'ON'
-                elif self.attr['data_value'] == False :
-                    self.attr['data_value'] = 'OFF'
+            #if self.attr['is_binary'] :
+            #    if self.attr['data_value'] == True :
+            #        self.attr['data_value'] = 'ON'
+            #    elif self.attr['data_value'] == False :
+            #        self.attr['data_value'] = 'OFF'
 
 
             self.mqtt.mqtt_client.publish(
