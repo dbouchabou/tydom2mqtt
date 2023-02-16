@@ -365,10 +365,10 @@ class TydomMessageHandler():
                     elif (msg_type == 'msg_data'):
                         parsed = json.loads(data)
                         # logger.debug(parsed)
-                        # await self.parse_devices_data(parsed=parsed)
+                        await self.parse_devices_data(parsed=parsed)
 
                         await self.parse_devices_data_2(parsed)
-                        
+
                     elif (msg_type == 'msg_cdata'):
                         parsed = json.loads(data)
                         # logger.debug(parsed)
