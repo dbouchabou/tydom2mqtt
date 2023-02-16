@@ -5,7 +5,7 @@ from alarm_control_panel import Alarm
 from sensors import sensor
 from switch import Switch
 
-from sensors_2 import Sensor
+from sensors_2 import Sensor_2
 from switch_2 import Switch_2
 
 
@@ -365,7 +365,7 @@ class TydomMessageHandler():
                     elif (msg_type == 'msg_data'):
                         parsed = json.loads(data)
                         # logger.debug(parsed)
-                        await self.parse_devices_data(parsed=parsed)
+                        # await self.parse_devices_data(parsed=parsed)
 
                         await self.parse_devices_data_2(parsed)
                     elif (msg_type == 'msg_cdata'):
@@ -512,7 +512,8 @@ class TydomMessageHandler():
                         attr['endpoint_id'] = device_endpoint_id
                         attr['data_name'] = device_data['name']
                         attr['data_value'] = device_data['value']
-                        attr['type'] = None
+                        attr['type'] = None # Default Value
+                        attr['is_binary'] = False # Default Value
 
                         logger.debug("PARSE DATA 2 VALUE : {}".format(attr['data_value']))
 
@@ -525,26 +526,43 @@ class TydomMessageHandler():
                             attr['state_class'] = 'measurement'
                             attr['model'] = 'Sensor'
                             attr['entity_name'] = 'Active power'
+                            attr['is_binary'] = False
 
                         # plugCmd
                         if attr['data_name'] == 'plugCmd' :
                             attr['type'] = "switch"
                             attr['model'] = 'Sensor'
                             attr['entity_name'] = 'Switch'
-                            attr['cmd_on'] = 'ON'
-                            attr['cmd_off'] = 'OFF'
+
+                        # Interrupter
+                        if attr['data_name'] == 'action' :
+                            attr['type'] = "switch"
+                            attr['model'] = 'Interrupter'
+                            attr['entity_name'] = 'Switch'
+
+                        # D.O
+                        if attr['data_name'] == 'intrusionDetect' :
+                            attr['type'] = "sensor"
+                            attr['unit_of_measurement'] = None
+                            attr['device_class'] = 'opening'
+                            attr['state_class'] = None
+                            attr['model'] = 'DO'
+                            attr['entity_name'] = 'Opening'
+                            attr['is_binary'] = True
 
 
                         if attr['type'] == "sensor" :
-                            device = Sensor(
+                            device = Sensor_2(
                                 attr,
-                                self.mqtt_client,
-                                False)
+                                self.mqtt_client)
 
                         elif attr['type'] == "switch" :
                             device = Switch_2(
                                 attr,
                                 self.mqtt_client)
+                        
+                        elif attr['type'] == "button" :
+                            pass
 
                         if device != None :
                             await device.update()
