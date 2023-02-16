@@ -76,6 +76,12 @@ class Light_2:
 
             logger.debug("LIGHT 2 : START UPDATE ")
 
+            # Turn data integer values into state values
+            if self.attr['data_value'] == 100 :
+                self.attr['data_value'] = 'ON'
+            else :
+                self.attr['data_value'] = 'OFF'
+
             self.mqtt.mqtt_client.publish(
                 self.light_state_topic,
                 self.attr['data_value'],
