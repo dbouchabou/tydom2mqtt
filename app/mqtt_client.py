@@ -96,7 +96,7 @@ class MQTT_Hassio():
             device_id = (topic.split("/"))[3]  # extract ids from mqtt
             value = str(payload).strip('b').strip("'")
 
-            await Switch_2.put(self.tydom, device_id, device_id, "plugCmd ", value)
+            await Switch_2.put(self.tydom, device_id, device_id, "plugCmd", value)
         else: 
             logger.debug('MQTT message : NOT FOUND')
 
