@@ -4,7 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-sensor_config_topic = "homeassistant/sensor/tydom/{id}/{endpoint_id}/config"
+sensor_config_topic = "homeassistant/sensor/tydom/{id}/config"
 sensor_topic = "homeassistant/sensor/tydom/{id}/{endpoint_id}/state"
 
 #sensor_config_topic = "homeassistant/sensor/tydom/{id}/config"
@@ -20,7 +20,7 @@ class Sensor_2:
         self.attr = attr
         self.mqtt = mqtt
 
-        self.sensor_topic = sensor_topic.format(id = self.attr['device_id'], endpoint_id = self.attr['endpoint_id'])
+        self.sensor_topic = sensor_topic.format(id = self.attr['device_id'])
         self.sensor_config_topic = sensor_config_topic.format(id = self.attr['device_id'], endpoint_id = self.attr['endpoint_id'])
 
         #self.sensor_topic = sensor_topic.format(id = self.attr['device_id'])
