@@ -295,7 +295,7 @@ class MQTT_Hassio():
             await Switch.put_level_gate(tydom_client=self.tydom, device_id=device_id, switch_id=endpoint_id,
                                         level=str(value))
 
-        elif str(topic).find('plugCmd') != -1 :
+        elif str(topic).find('/command/') != -1 :
 
             logger.debug(
                 'Incoming MQTT plugCmd request : %s %s',
@@ -303,9 +303,11 @@ class MQTT_Hassio():
                 str(payload).strip('b').strip("'"))
 
             device_id = (topic.split("/"))[3]  # extract id from mqtt
+            endpoint_id = (topic.split("/"))[4]
+            command = (topic.split("/"))[6]
             value = str(payload).strip('b').strip("'")
 
-            await Switch_2.send(self.tydom, device_id, device_id, "plugCmd", value)
+            await Switch_2.send(self.tydom, device_id, endpoint_id, command, value)
 
         else:
             pass

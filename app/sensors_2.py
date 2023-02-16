@@ -4,23 +4,21 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-sensor_config_topic = "homeassistant/sensor/tydom/{id}/config"
-sensor_topic = "homeassistant/sensor/tydom/{id}/state"
+sensor_config_topic = "homeassistant/sensor/tydom/{id}/{endpoint_id}/config"
+sensor_topic = "homeassistant/sensor/tydom/{id}/{endpoint_id}/state"
 
 
-class Sensor:
+class Sensor_2:
 
     def __init__(self, 
                 attr,
-                mqtt = None,
-                binary = False) :
+                mqtt = None) :
 
         self.attr = attr
         self.mqtt = mqtt
-        self.is_binary_sensor = binary
 
-        self.sensor_topic = sensor_topic.format(id = self.attr['device_id'])
-        self.sensor_config_topic = sensor_config_topic.format(id = self.attr['device_id'])
+        self.sensor_topic = sensor_topic.format(id = self.attr['device_id'], endpoint_id = self.attr['endpoint_id'])
+        self.sensor_config_topic = sensor_config_topic.format(id = self.attr['device_id'], endpoint_id = self.attr['endpoint_id'])
 
         self.device = {}
         self.device['manufacturer'] = self.attr['manufacturer']
@@ -31,11 +29,18 @@ class Sensor:
 
         self.entity = {}
         self.entity['name'] = self.attr['entity_name']
-        self.entity['object_id'] = "{}_{}_{}".format(self.attr['name'],self.attr['device_id'],self.attr['entity_name'])
-        self.entity['unique_id'] = "{}_{}_{}".format(self.attr['name'],self.attr['device_id'],self.attr['entity_name'])
-        self.entity['device_class'] = self.attr['device_class']
-        self.entity['state_class'] = self.attr['state_class']
-        self.entity['unit_of_measurement'] = self.attr['unit_of_measurement']
+        self.entity['object_id'] = "{}_{}_{}_{}".format(self.attr['name'],self.attr['device_id'],self.attr['endpoint_id'],self.attr['entity_name'])
+        self.entity['unique_id'] = "{}_{}_{}_{}".format(self.attr['name'],self.attr['device_id'],self.attr['endpoint_id'],self.attr['entity_name'])
+
+        if self.attr['device_class'] != None :
+            self.entity['device_class'] = self.attr['device_class']
+
+        if self.attr['state_class'] != None :
+            self.entity['state_class'] = self.attr['state_class']
+        
+        if self.attr['unit_of_measurement'] != None :
+            self.entity['unit_of_measurement'] = self.attr['unit_of_measurement']
+        
         self.entity['device'] = self.device
         self.entity['state_topic'] = self.sensor_topic
 
@@ -54,7 +59,7 @@ class Sensor:
 
             await self.setup()  # Publish config
 
-            if self.is_binary_sensor :
+            if self.attr['is_binary'] :
                 if self.attr['data_value'] == True :
                     self.attr['data_value'] = 'ON'
                 elif self.attr['data_value'] == False :
