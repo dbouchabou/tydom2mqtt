@@ -37,10 +37,10 @@ class Button_2:
         self.entity['command_topic'] = self.button_command_topic
         
 
-        if 'payload_on' in self.attr.keys():
-            self.entity['payload_press'] = self.attr['payload_press']
-        else :
-            self.entity['payload_press'] = attr['data_value']
+        #if 'payload_on' in self.attr.keys():
+        #    self.entity['payload_press'] = self.attr['payload_press']
+        #else :
+        #    self.entity['payload_press'] = self.attr['data_value']
 
     async def setup(self) :
 
@@ -67,7 +67,7 @@ class Button_2:
             try:
                 self.mqtt.mqtt_client.publish(
                     self.button_command_topic,
-                    "TOGGLE",
+                    'PRESS',
                     qos=0)  # Button State
             except Exception as e:
                 logger.error("on subscribe ERROR : %s", e)

@@ -537,7 +537,7 @@ class TydomMessageHandler():
                             attr['entity_name'] = 'Switch'
 
                         # Interrupter
-                        elif attr['data_name'] == 'action' and attr['data_value'] != 'IDLE':
+                        elif attr['data_name'] == 'action' and attr['data_value'] == 'TOGGLE':
                             attr['type'] = "button"
                             attr['model'] = 'Interrupter'
                             attr['entity_name'] = 'Button'
