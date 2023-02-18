@@ -4,7 +4,7 @@ from logger import logger
 import logging
 
 logger = logging.getLogger(__name__)
-button_config_topic = "homeassistant/button/tydom/{id}/config"
+button_config_topic = "homeassistant/button/tydom/{id}_{endpoint_id}/config"
 button_attributes_topic = "homeassistant/button/tydom/{id}/{endpoint_id}/attributes"
 button_command_topic = "homeassistant/button/tydom/{id}/{endpoint_id}/btncmd"
 
@@ -17,7 +17,7 @@ class Button_2:
         self.attr = attr
         self.mqtt = mqtt
 
-        self.button_config_topic = button_config_topic.format(id = self.attr['device_id'])
+        self.button_config_topic = button_config_topic.format(id = self.attr['device_id'], endpoint_id = self.attr['endpoint_id'])
         self.button_attributes_topic = button_attributes_topic.format(id = self.attr['device_id'], endpoint_id = self.attr['endpoint_id'])
         self.button_command_topic = button_command_topic.format(id = self.attr['device_id'], endpoint_id = self.attr['endpoint_id'])
         
@@ -66,7 +66,7 @@ class Button_2:
 
 
             self.mqtt.mqtt_client.publish(
-                self.button_state_topic,
+                self.button_command_topic,
                 self.attr['data_value'],
                 qos=0,
                 retain=True)  # Button State
