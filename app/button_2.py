@@ -68,8 +68,7 @@ class Button_2:
             self.mqtt.mqtt_client.publish(
                 self.button_command_topic,
                 self.attr['data_value'],
-                qos=0,
-                retain=True)  # Button State
+                qos=0)  # Button State
         
             logger.info(
                 "Sensor created / updated : %s %s",
