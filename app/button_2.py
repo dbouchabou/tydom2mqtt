@@ -64,11 +64,13 @@ class Button_2:
 
             logger.debug("BUTTON 2 : START UPDATE ")
 
-
-            self.mqtt.mqtt_client.publish(
-                self.button_command_topic,
-                self.attr['data_value'],
-                qos=0)  # Button State
+            try:
+                self.mqtt.mqtt_client.publish(
+                    self.button_command_topic,
+                    "TOGGLE",
+                    qos=0)  # Button State
+            except Exception as e:
+                logger.error("on subscribe ERROR : %s", e)
         
             logger.info(
                 "Sensor created / updated : %s %s",
