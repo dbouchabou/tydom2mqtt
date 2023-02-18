@@ -18,8 +18,8 @@ class Button_2:
         self.mqtt = mqtt
 
         self.button_config_topic = button_config_topic.format(id = self.attr['device_id'])
-        self.button_attributes_topic = button_attributes_topic.format(id = self.attr['device_id'])
-        self.button_command_topic = button_command_topic.format(id = self.attr['device_id'])
+        self.button_attributes_topic = button_attributes_topic.format(id = self.attr['device_id'], endpoint_id = self.attr['endpoint_id'])
+        self.button_command_topic = button_command_topic.format(id = self.attr['device_id'], endpoint_id = self.attr['endpoint_id'])
         
 
         self.device = {}
