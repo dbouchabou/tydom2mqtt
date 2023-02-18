@@ -541,6 +541,7 @@ class TydomMessageHandler():
                             attr['type'] = "button"
                             attr['model'] = 'Interrupter'
                             attr['entity_name'] = 'Button'
+                            attr['payload_press'] = 'TOGGLE'
 
                         # D.O
                         elif attr['data_name'] == 'intrusionDetect' :

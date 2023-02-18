@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 button_config_topic = "homeassistant/button/tydom/{id}/config"
 button_attributes_topic = "homeassistant/button/tydom/{id}/{endpoint_id}/attributes"
-button_command_topic = "homeassistant/button/tydom/{id}/{endpoint_id}/command/{cmd}"
+button_command_topic = "homeassistant/button/tydom/{id}/{endpoint_id}/btncmd"
 
 
 class Button_2:
@@ -19,7 +19,7 @@ class Button_2:
 
         self.button_config_topic = button_config_topic.format(id = self.attr['device_id'])
         self.button_attributes_topic = button_attributes_topic.format(id = self.attr['device_id'])
-        self.button_command_topic = button_command_topic.format(id = self.attr['device_id'], cmd = self.attr['data_name'])
+        self.button_command_topic = button_command_topic.format(id = self.attr['device_id'])
         
 
         self.device = {}
