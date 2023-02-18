@@ -9,6 +9,7 @@ from sensors_2 import Sensor_2
 from switch_2 import Switch_2
 from binary_sensors_2 import Binary_Sensor_2
 from light_2 import Light_2
+from button_2 import Button_2
 
 
 from http.server import BaseHTTPRequestHandler
@@ -537,9 +538,9 @@ class TydomMessageHandler():
 
                         # Interrupter
                         elif attr['data_name'] == 'action' :
-                            attr['type'] = "switch"
+                            attr['type'] = "button"
                             attr['model'] = 'Interrupter'
-                            attr['entity_name'] = 'Switch'
+                            attr['entity_name'] = 'Button'
 
                         # D.O
                         elif attr['data_name'] == 'intrusionDetect' :
@@ -573,6 +574,11 @@ class TydomMessageHandler():
 
                         elif attr['type'] == "light" :
                             device = Light_2(
+                                attr,
+                                self.mqtt_client)
+                        
+                        elif attr['type'] == "button" :
+                            device = Button_2(
                                 attr,
                                 self.mqtt_client)
                                 

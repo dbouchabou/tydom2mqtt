@@ -51,7 +51,7 @@ class Binary_Sensor_2:
 
         if (self.mqtt is not None) :
 
-            logger.debug("SENSOR 2 : START SETUP ")
+            logger.debug("BINARY SENSOR 2 : START SETUP ")
 
             self.mqtt.mqtt_client.publish(
                 (self.sensor_config_topic).lower(), 
@@ -59,7 +59,7 @@ class Binary_Sensor_2:
                 qos=0, 
                 retain=True)  # sensor Config
 
-            logger.debug("SENSOR 2 : SETUP OK")
+            logger.debug("BINARY SENSOR 2 : SETUP OK")
 
     async def update(self) :
 
@@ -67,7 +67,7 @@ class Binary_Sensor_2:
 
             await self.setup()  # Publish config
 
-            logger.debug("SENSOR 2 : START UPDATE ")
+            logger.debug("BINARY SENSOR 2 : START UPDATE ")
 
             
             if self.attr['data_value'] == True :
