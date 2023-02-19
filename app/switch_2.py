@@ -49,6 +49,12 @@ class Switch_2:
         self.entity['state_topic'] = self.switch_state_topic
         self.entity['command_topic'] = self.switch_command_topic
 
+        if 'payload_on' in self.attr.keys():
+            self.entity['payload_on'] = self.attr['payload_on']
+
+        if 'payload_on' in self.attr.keys():
+            self.entity['payload_off'] = self.attr['payload_off']
+
     async def setup(self) :
 
         if (self.mqtt is not None) :

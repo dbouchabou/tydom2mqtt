@@ -537,11 +537,12 @@ class TydomMessageHandler():
                             attr['entity_name'] = 'Switch'
 
                         # Interrupter
-                        elif attr['data_name'] == 'action' and attr['data_value'] == 'TOGGLE':
-                            attr['type'] = "button"
+                        elif attr['data_name'] == 'action':
+                            attr['type'] = "switch"
                             attr['model'] = 'Interrupter'
                             attr['entity_name'] = 'Button'
-                            #attr['payload_press'] = 'TOGGLE'
+                            attr['payload_on'] = 'TOGGLE'
+                            attr['payload_off'] = 'IDLE'
 
                         # D.O
                         elif attr['data_name'] == 'intrusionDetect' :
