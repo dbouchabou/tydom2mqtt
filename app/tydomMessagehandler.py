@@ -12,7 +12,7 @@ from button_2 import Button_2
 from cover import Cover
 from light import Light
 from light_2 import Light_2
-from logger import logger
+from logger import _LOGGER
 from sensors import sensor
 from sensors_2 import Sensor_2
 from switch import Switch
