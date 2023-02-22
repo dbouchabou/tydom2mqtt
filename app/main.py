@@ -144,14 +144,18 @@ async def message_handler(message):
 
 
 async def tydom_listener():
-    # Wainting for income message from the websocket
-    message = await tydom_client.connection.recv()
-    logger.debug("<<<<<<<<<< Receiving from tydom_client...")
-    logger.debug(message)
+    # listener loop
+    while True:
+        # Wainting for income message from the websocket
+        message = await tydom_client.connection.recv()
+        logger.debug("<<<<<<<<<< Receiving from tydom_client...")
+        logger.debug(message)
 
-    logger.debug("Server said > %s".format(message))
+        logger.debug("Server said > %s".format(message))
 
-    message_handler(message)
+        message_handler(message)
+
+        await asyncio.sleep(0)
 
 
 async def listen_tydom_forever():
