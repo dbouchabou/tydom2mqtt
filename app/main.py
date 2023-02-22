@@ -144,41 +144,14 @@ async def message_handler(message):
 
 
 async def tydom_listener():
-    while True:
-        # listener loop
-        try:
-            # Wainting for income message from the websocket
-            message = await asyncio.wait_for(
-                tydom_client.connection.recv(),
-                timeout=20,
-            )
-            logger.debug("<<<<<<<<<< Receiving from tydom_client...")
-            logger.debug(message)
+    # Wainting for income message from the websocket
+    message = await tydom_client.connection.recv()
+    logger.debug("<<<<<<<<<< Receiving from tydom_client...")
+    logger.debug(message)
 
-            logger.debug("Server said > %s".format(message))
+    logger.debug("Server said > %s".format(message))
 
-            message_handler(message)
-
-        except (
-            asyncio.TimeoutError,
-            websockets.exceptions.ConnectionClosed,
-        ) as e:
-            logger.debug(e)
-            try:
-                pong = tydom_client.post_refresh()
-                await asyncio.wait_for(pong, timeout=tydom_client.refresh_timeout)
-                continue
-            except Exception as e:
-                logger.error(
-                    "TimeoutError or websocket error - retrying connection in %s seconds...".format(
-                        tydom_client.sleep_time
-                    )
-                )
-                logger.error("Error: %s", e)
-                await asyncio.sleep(tydom_client.sleep_time)
-                break
-
-        await asyncio.sleep(0)
+    message_handler(message)
 
 
 async def listen_tydom_forever():
