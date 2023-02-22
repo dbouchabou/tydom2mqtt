@@ -34,25 +34,6 @@ class TydomWebSocketClient:
         # Some devices (like Tywatt) need polling
         self.poll_device_urls = []
         self.current_poll_index = 0
-        # if not (self.host == 'mediation.tydom.com'):
-        #     test = None
-        #     testlocal = None
-        #     try:
-        #         logger.info('Testing if local Tydom hub IP is reachable....')
-        #         testlocal = subprocess.check_output("ping -{} 1 {}".format('n' if platform.system().lower()=="windows" else 'c', self.host), shell=True)
-        #     except Exception as e:
-        #         logger.info('Local control is down, will try to fallback to remote....')
-        #         try:
-        #             logger.info('Testing if mediation.tydom.com is reacheable...')
-        #             test = subprocess.check_output("ping -{} 1 {}".format('n' if platform.system().lower()=="windows" else 'c', 'mediation.tydom.com'), shell=True)
-        #             logger.info('mediation.tydom.com is reacheable ! Using it to prevent code 1006 deconnections from local ip for now.')
-        #             self.host = 'mediation.tydom.com'
-        #         except Exception as e:
-        #             logger.info('Remote control is down !')
-
-        #             if (testlocal == None) :
-        #                 logger.info("Exiting to ensure restart....")
-        #                 #sys.exit()
 
         # Set Host, ssl context and prefix for remote or local connection
         if self.host == "mediation.tydom.com":

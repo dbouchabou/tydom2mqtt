@@ -131,62 +131,69 @@ def loop_task():
     loop.run_until_complete(listen_tydom_forever(tydom_client))
 
 
-async def listen_tydom_forever(tydom_client):
+async def message_handler(message):
+    try:
+        handler = TydomMessageHandler(
+            incoming_bytes=message,
+            tydom_client=tydom_client,
+            mqtt_client=hassio,
+        )
+        await handler.incomingTriage()
+    except Exception as e:
+        logger.error("Tydom Message Handler exception : %s", e)
+
+
+async def tydom_listener():
+    while True:
+        # listener loop
+        try:
+            # Wainting for income message from the websocket
+            message = await asyncio.wait_for(
+                tydom_client.connection.recv(),
+                timeout=20,
+            )
+            logger.debug("<<<<<<<<<< Receiving from tydom_client...")
+            logger.debug(message)
+
+            logger.debug("Server said > %s".format(message))
+
+            message_handler(message)
+
+        except (
+            asyncio.TimeoutError,
+            websockets.exceptions.ConnectionClosed,
+        ) as e:
+            logger.debug(e)
+            try:
+                pong = tydom_client.post_refresh()
+                await asyncio.wait_for(pong, timeout=tydom_client.refresh_timeout)
+                continue
+            except Exception as e:
+                logger.error(
+                    "TimeoutError or websocket error - retrying connection in %s seconds...".format(
+                        tydom_client.sleep_time
+                    )
+                )
+                logger.error("Error: %s", e)
+                await asyncio.sleep(tydom_client.sleep_time)
+                break
+
+        await asyncio.sleep(0)
+
+
+async def listen_tydom_forever():
     """
     Connect, then receive all server messages and pipe them to the handler, and reconnects if needed
     """
 
     while True:
-        await asyncio.sleep(0)
         # # outer loop restarted every time the connection fails
         try:
             await tydom_client.connect()
             logger.info("Tydom Client is connected to websocket and ready !")
             await tydom_client.setup()
 
-            while True:
-                # listener loop
-                try:
-                    # Wainting for income message from the websocket
-                    incoming_bytes_str = await asyncio.wait_for(
-                        tydom_client.connection.recv(),
-                        timeout=tydom_client.refresh_timeout,
-                    )
-                    logger.debug("<<<<<<<<<< Receiving from tydom_client...")
-                    logger.debug(incoming_bytes_str)
-
-                    logger.debug("Server said > %s".format(incoming_bytes_str))
-
-                    handler = TydomMessageHandler(
-                        incoming_bytes=incoming_bytes_str,
-                        tydom_client=tydom_client,
-                        mqtt_client=hassio,
-                    )
-                    try:
-                        await handler.incomingTriage()
-                    except Exception as e:
-                        logger.error("Tydom Message Handler exception : %s", e)
-
-                except (
-                    asyncio.TimeoutError,
-                    websockets.exceptions.ConnectionClosed,
-                ) as e:
-                    logger.debug(e)
-                    try:
-                        pong = tydom_client.post_refresh()
-                        await asyncio.wait_for(
-                            pong, timeout=tydom_client.refresh_timeout
-                        )
-                        continue
-                    except Exception as e:
-                        logger.error(
-                            "TimeoutError or websocket error - retrying connection in %s seconds...".format(
-                                tydom_client.sleep_time
-                            )
-                        )
-                        logger.error("Error: %s", e)
-                        await asyncio.sleep(tydom_client.sleep_time)
-                        break
+            tydom_listener(tydom_client)
 
         except socket.gaierror:
             logger.info(
@@ -207,6 +214,8 @@ async def listen_tydom_forever(tydom_client):
             )
             await asyncio.sleep(tydom_client.sleep_time)
             continue
+
+        await asyncio.sleep(0)
 
 
 if __name__ == "__main__":
