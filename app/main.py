@@ -156,7 +156,7 @@ async def tydom_listener():
 
         message_handler(message)
 
-        await asyncio.sleep(0)
+        # await asyncio.sleep(0)
 
 
 async def listen_tydom_forever():
