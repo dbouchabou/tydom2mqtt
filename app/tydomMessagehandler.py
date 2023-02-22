@@ -243,7 +243,7 @@ class TydomMessageHandler:
                 if "Uri-Origin: /refresh/all" in first in first:
                     pass
                 elif ("PUT /devices/data" in first) or ("/devices/cdata" in first):
-                    logger.debug("PUT /devices/data message detected !")
+                    _LOGGER.debug("PUT /devices/data message detected !")
                     try:
                         try:
                             incoming = self.parse_put_response(bytes_str)
@@ -252,34 +252,34 @@ class TydomMessageHandler:
                             incoming = self.parse_put_response(bytes_str, 7)
                         await self.parse_response(incoming)
                     except BaseException:
-                        logger.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-                        logger.error("RAW INCOMING :")
-                        logger.error(bytes_str)
-                        logger.error("END RAW")
-                        logger.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                        _LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                        _LOGGER.error("RAW INCOMING :")
+                        _LOGGER.error(bytes_str)
+                        _LOGGER.error("END RAW")
+                        _LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
                 elif "scn" in first:
                     try:
                         incoming = get(bytes_str)
                         await self.parse_response(incoming)
-                        logger.info("Scenarii message processed !")
-                        logger.info("##################################")
+                        _LOGGER.info("Scenarii message processed !")
+                        _LOGGER.info("##################################")
                     except BaseException:
-                        logger.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-                        logger.error("RAW INCOMING :")
-                        logger.error(bytes_str)
-                        logger.error("END RAW")
-                        logger.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                        _LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                        _LOGGER.error("RAW INCOMING :")
+                        _LOGGER.error(bytes_str)
+                        _LOGGER.error("END RAW")
+                        _LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
                 elif "POST" in first:
                     try:
                         incoming = self.parse_put_response(bytes_str)
                         await self.parse_response(incoming)
-                        logger.info("POST message processed !")
+                        _LOGGER.info("POST message processed !")
                     except BaseException:
-                        logger.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-                        logger.error("RAW INCOMING :")
-                        logger.error(bytes_str)
-                        logger.error("END RAW")
-                        logger.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                        _LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                        _LOGGER.error("RAW INCOMING :")
+                        _LOGGER.error(bytes_str)
+                        _LOGGER.error("END RAW")
+                        _LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
                 elif "HTTP/1.1" in first:  # (bytes_str != 0) and
                     response = self.response_from_bytes(
                         bytes_str[len(self.cmd_prefix) :]
@@ -288,29 +288,29 @@ class TydomMessageHandler:
                     try:
                         await self.parse_response(incoming)
                     except BaseException:
-                        logger.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-                        logger.error("RAW INCOMING :")
-                        logger.error(bytes_str)
-                        logger.error("END RAW")
-                        logger.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                        _LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                        _LOGGER.error("RAW INCOMING :")
+                        _LOGGER.error(bytes_str)
+                        _LOGGER.error("END RAW")
+                        _LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
                 else:
-                    logger.warn("Didn't detect incoming type, here it is :")
-                    logger.warn(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-                    logger.warn("RAW INCOMING :")
-                    logger.warn(bytes_str)
-                    logger.warn("END RAW")
-                    logger.warn(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                    _LOGGER.warn("Didn't detect incoming type, here it is :")
+                    _LOGGER.warn(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                    _LOGGER.warn("RAW INCOMING :")
+                    _LOGGER.warn(bytes_str)
+                    _LOGGER.warn("END RAW")
+                    _LOGGER.warn(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 
             except Exception as e:
-                logger.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                logger.error("receiveMessage error")
-                logger.error("RAW :")
-                logger.error(bytes_str)
-                logger.error("Incoming payload :")
-                logger.error(incoming)
-                logger.error("Error :")
-                logger.error(e)
-                logger.error("Exiting to ensure systemd restart....")
+                _LOGGER.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                _LOGGER.error("receiveMessage error")
+                _LOGGER.error("RAW :")
+                _LOGGER.error(bytes_str)
+                _LOGGER.error("Incoming payload :")
+                _LOGGER.error(incoming)
+                _LOGGER.error("Error :")
+                _LOGGER.error(e)
+                _LOGGER.error("Exiting to ensure systemd restart....")
                 sys.exit()  # Exit all to ensure systemd restart
 
     # Basic response parsing. Typically GET responses + instanciate covers and
@@ -325,86 +325,86 @@ class TydomMessageHandler:
             # search for id_catalog in all data to be sure to get configuration
             # detected
             if "id_catalog" in data:
-                logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-                logger.debug("Incoming message type : config detected")
+                _LOGGER.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                _LOGGER.debug("Incoming message type : config detected")
                 msg_type = "msg_config"
-                logger.debug(data)
+                _LOGGER.debug(data)
             elif "cmetadata" in data:
-                logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-                logger.debug("Incoming message type : cmetadata detected")
+                _LOGGER.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                _LOGGER.debug("Incoming message type : cmetadata detected")
                 msg_type = "msg_cmetadata"
-                logger.debug(data)
+                _LOGGER.debug(data)
             elif "cdata" in data:
-                logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-                logger.debug("Incoming message type : cdata detected")
+                _LOGGER.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                _LOGGER.debug("Incoming message type : cdata detected")
                 msg_type = "msg_cdata"
-                logger.debug(data)
+                _LOGGER.debug(data)
             elif "id" in first:
-                logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-                logger.debug("Incoming message type : data detected")
+                _LOGGER.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                _LOGGER.debug("Incoming message type : data detected")
                 msg_type = "msg_data"
-                logger.debug(data)
+                _LOGGER.debug(data)
             elif "doctype" in first:
-                logger.debug("Incoming message type : html detected (probable 404)")
+                _LOGGER.debug("Incoming message type : html detected (probable 404)")
                 msg_type = "msg_html"
-                logger.debug(data)
+                _LOGGER.debug(data)
             elif "productName" in first:
-                logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-                logger.debug("Incoming message type : Info detected")
+                _LOGGER.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                _LOGGER.debug("Incoming message type : Info detected")
                 msg_type = "msg_info"
-                logger.debug(data)
+                _LOGGER.debug(data)
             else:
-                logger.debug("Incoming message type : no type detected")
-                logger.debug(data)
+                _LOGGER.debug("Incoming message type : no type detected")
+                _LOGGER.debug(data)
 
             if not (msg_type is None):
                 try:
                     if msg_type == "msg_config":
                         parsed = json.loads(data)
-                        # logger.debug(parsed)
+                        # _LOGGER.debug(parsed)
                         await self.parse_config_data(parsed=parsed)
                     elif msg_type == "msg_cmetadata":
                         parsed = json.loads(data)
-                        # logger.debug(parsed)
+                        # _LOGGER.debug(parsed)
                         await self.parse_cmeta_data(parsed=parsed)
 
                     elif msg_type == "msg_data":
                         parsed = json.loads(data)
-                        # logger.debug(parsed)
+                        # _LOGGER.debug(parsed)
                         # await self.parse_devices_data(parsed=parsed)
 
                         await self.parse_devices_data_2(parsed)
 
                     elif msg_type == "msg_cdata":
                         parsed = json.loads(data)
-                        # logger.debug(parsed)
+                        # _LOGGER.debug(parsed)
                         await self.parse_devices_cdata(parsed=parsed)
                     elif msg_type == "msg_html":
-                        logger.debug("HTML Response ?")
+                        _LOGGER.debug("HTML Response ?")
                     elif msg_type == "msg_info":
                         pass
                     else:
                         # Default json dump
-                        logger.debug()
-                        logger.debug(
+                        _LOGGER.debug()
+                        _LOGGER.debug(
                             json.dumps(
                                 parsed, sort_keys=True, indent=4, separators=(",", ": ")
                             )
                         )
                 except Exception as e:
-                    logger.error("Cannot parse response !")
-                    # logger.error('Response :')
-                    # logger.error(data)
+                    _LOGGER.error("Cannot parse response !")
+                    # _LOGGER.error('Response :')
+                    # _LOGGER.error(data)
                     if e != "Expecting value: line 1 column 1 (char 0)":
-                        logger.error("Error : ", e)
-                        logger.error(parsed)
-            logger.info("Incoming data parsed successfully !")
+                        _LOGGER.error("Error : ", e)
+                        _LOGGER.error(parsed)
+            _LOGGER.info("Incoming data parsed successfully !")
             return 0
 
     async def parse_config_data(self, parsed):
         for i in parsed["endpoints"]:
             # Get list of shutter
-            # logger.debug(i)
+            # _LOGGER.debug(i)
             device_unique_id = str(i["id_endpoint"]) + "_" + str(i["id_device"])
 
             if (
@@ -425,20 +425,20 @@ class TydomMessageHandler:
                 or i["last_usage"] == "interrupter"
                 or i["last_usage"] == "plug"
             ):
-                # logger.debug('%s %s'.format(i["id_endpoint"],i["name"]))
+                # _LOGGER.debug('%s %s'.format(i["id_endpoint"],i["name"]))
                 # device_name[i["id_endpoint"]] = i["name"]
                 device_name[device_unique_id] = i["name"]
                 device_type[device_unique_id] = i["last_usage"]
                 device_endpoint[device_unique_id] = i["id_endpoint"]
 
             # if i["last_usage"] == 'boiler' or i["last_usage"] == 'conso':
-            # logger.debug('%s %s'.format(i["id_endpoint"],i["name"]))
+            # _LOGGER.debug('%s %s'.format(i["id_endpoint"],i["name"]))
             #    device_name[device_unique_id] = i["name"]
             #    device_type[device_unique_id] = i["last_usage"]
             #    device_endpoint[device_unique_id] = i["id_endpoint"]
 
             if i["last_usage"] == "alarm":
-                # logger.debug('%s %s'.format(i["id_endpoint"], i["name"]))
+                # _LOGGER.debug('%s %s'.format(i["id_endpoint"], i["name"]))
                 device_name[device_unique_id] = "Tyxal Alarm"
                 device_type[device_unique_id] = "alarm"
                 device_endpoint[device_unique_id] = i["id_endpoint"]
@@ -453,7 +453,7 @@ class TydomMessageHandler:
                 device_type[device_unique_id] = "unknown"
                 device_endpoint[device_unique_id] = i["id_endpoint"]
 
-        logger.info("Configuration updated")
+        _LOGGER.info("Configuration updated")
 
     async def parse_cmeta_data(self, parsed):
         for i in parsed:
@@ -482,7 +482,7 @@ class TydomMessageHandler:
                                             + "&reset=false"
                                         )
                                         self.tydom_client.add_poll_device_url(url)
-                                        logger.debug("Add poll device : " + url)
+                                        _LOGGER.debug("Add poll device : " + url)
                         elif elem["name"] == "energyInstant":
                             device_name[unique_id] = "Tywatt"
                             device_type[unique_id] = "conso"
@@ -501,7 +501,7 @@ class TydomMessageHandler:
                                             + "&reset=false"
                                         )
                                         self.tydom_client.add_poll_device_url(url)
-                                        logger.debug("Add poll device : " + url)
+                                        _LOGGER.debug("Add poll device : " + url)
                         elif elem["name"] == "energyDistrib":
                             device_name[unique_id] = "Tywatt"
                             device_type[unique_id] = "conso"
@@ -519,9 +519,9 @@ class TydomMessageHandler:
                                             + src
                                         )
                                         self.tydom_client.add_poll_device_url(url)
-                                        logger.debug("Add poll device : " + url)
+                                        _LOGGER.debug("Add poll device : " + url)
 
-        logger.info("Metadata configuration updated")
+        _LOGGER.info("Metadata configuration updated")
 
     async def parse_devices_data_2(self, parsed):
         for incoming_msg in parsed:
@@ -535,7 +535,7 @@ class TydomMessageHandler:
 
                     device_data = endpoint["data"][0]
 
-                    logger.debug("Device DATA : {}".format(device_data))
+                    _LOGGER.debug("Device DATA : {}".format(device_data))
 
                     if device_data["validity"] == "upToDate":
                         device = None
@@ -550,7 +550,7 @@ class TydomMessageHandler:
                         attr["data_value"] = device_data["value"]
                         attr["type"] = None  # Default Value
 
-                        logger.debug(
+                        _LOGGER.debug(
                             "PARSE DATA 2 VALUE : {}".format(attr["data_value"])
                         )
 
@@ -608,11 +608,11 @@ class TydomMessageHandler:
                             device = Button_2(attr, self.mqtt_client)
 
                         if device != None:
-                            logger.debug(
+                            _LOGGER.debug(
                                 "PARSE DATA 2 : DEVICE UPDATE {}".format(attr["type"])
                             )
                             await device.update()
-                            logger.debug("PARSE DATA 2 : DEVICE UPDATE OK")
+                            _LOGGER.debug("PARSE DATA 2 : DEVICE UPDATE OK")
 
     async def parse_devices_data(self, parsed):
         for i in parsed:
@@ -638,16 +638,16 @@ class TydomMessageHandler:
                         name_of_id = self.get_name_from_id(unique_id)
                         type_of_id = self.get_type_from_id(unique_id)
 
-                        logger.debug("======[ DEVICE INFOS ]======")
-                        logger.debug("ID {}".format(device_id))
-                        logger.debug("ENDPOINT ID {}".format(endpoint_id))
-                        logger.debug("Name {}".format(name_of_id))
-                        logger.debug("Type {}".format(type_of_id))
-                        logger.debug("==========================")
+                        _LOGGER.debug("======[ DEVICE INFOS ]======")
+                        _LOGGER.debug("ID {}".format(device_id))
+                        _LOGGER.debug("ENDPOINT ID {}".format(endpoint_id))
+                        _LOGGER.debug("Name {}".format(name_of_id))
+                        _LOGGER.debug("Type {}".format(type_of_id))
+                        _LOGGER.debug("==========================")
 
                         ##################################
                         for elem in endpoint["data"]:
-                            logger.debug("CURRENT ELEM={}".format(elem))
+                            _LOGGER.debug("CURRENT ELEM={}".format(elem))
                             # endpoint_id = None
 
                             # Element name
@@ -843,14 +843,14 @@ class TydomMessageHandler:
                                     attr_ukn[elementName] = elementValue
 
                     except Exception as e:
-                        logger.error("msg_data error in parsing !")
-                        logger.error(e)
+                        _LOGGER.error("msg_data error in parsing !")
+                        _LOGGER.error(e)
 
                     if (
                         "device_type" in attr_cover
                         and attr_cover["device_type"] == "cover"
                     ):
-                        # logger.debug(attr_cover)
+                        # _LOGGER.debug(attr_cover)
                         new_cover = "cover_tydom_" + str(device_id)
                         new_cover = Cover(
                             tydom_attributes=attr_cover, mqtt=self.mqtt_client
@@ -861,7 +861,7 @@ class TydomMessageHandler:
                         "device_type" in attr_door
                         and attr_door["device_type"] == "sensor"
                     ):
-                        # logger.debug(attr_cover)
+                        # _LOGGER.debug(attr_cover)
                         new_door = "door_tydom_" + str(device_id)
                         new_door = sensor(
                             elem_name=attr_door["element_name"],
@@ -875,7 +875,7 @@ class TydomMessageHandler:
                         "device_type" in attr_window
                         and attr_window["device_type"] == "sensor"
                     ):
-                        # logger.debug(attr_cover)
+                        # _LOGGER.debug(attr_cover)
                         new_window = "window_tydom_" + str(device_id)
                         new_window = sensor(
                             elem_name=attr_window["element_name"],
@@ -889,7 +889,7 @@ class TydomMessageHandler:
                         "device_type" in attr_light
                         and attr_light["device_type"] == "light"
                     ):
-                        # logger.debug(attr_cover)
+                        # _LOGGER.debug(attr_cover)
                         new_light = "light_tydom_" + str(device_id)
                         new_light = Light(
                             tydom_attributes=attr_light, mqtt=self.mqtt_client
@@ -900,7 +900,7 @@ class TydomMessageHandler:
                         "device_type" in attr_boiler
                         and attr_boiler["device_type"] == "climate"
                     ):
-                        # logger.debug(attr_boiler)
+                        # _LOGGER.debug(attr_boiler)
                         new_boiler = "boiler_tydom_" + str(device_id)
                         new_boiler = Boiler(
                             tydom_attributes=attr_boiler,
@@ -913,7 +913,7 @@ class TydomMessageHandler:
                         "device_type" in attr_gate
                         and attr_gate["device_type"] == "switch"
                     ):
-                        # logger.debug(attr_gate)
+                        # _LOGGER.debug(attr_gate)
                         new_gate = "gate_door_tydom_" + str(endpoint_id)
                         new_gate = Switch(
                             tydom_attributes=attr_gate, mqtt=self.mqtt_client
@@ -924,7 +924,7 @@ class TydomMessageHandler:
                         "device_type" in attr_ukn
                         and attr_ukn["device_type"] == "sensor"
                     ):
-                        # logger.debug(attr_cover)
+                        # _LOGGER.debug(attr_cover)
                         new_ukn = "door_tydom_" + str(device_id)
                         new_ukn = sensor(
                             elem_name=attr_ukn["element_name"],
@@ -940,7 +940,7 @@ class TydomMessageHandler:
                         "device_type" in attr_alarm
                         and attr_alarm["device_type"] == "alarm_control_panel"
                     ):
-                        # logger.debug(attr_alarm)
+                        # _LOGGER.debug(attr_alarm)
                         state = None
                         sos_state = False
                         maintenance_mode = False
@@ -1006,12 +1006,12 @@ class TydomMessageHandler:
                                 out = attr_alarm["outTemperature"]
 
                             if sos_state:
-                                logger.warn("SOS !")
+                                _LOGGER.warn("SOS !")
 
                             if not (state is None):
-                                # logger.debug(state)
+                                # _LOGGER.debug(state)
                                 alarm = "alarm_tydom_" + str(endpoint_id)
-                                # logger.debug("Alarm created / updated : "+alarm)
+                                # _LOGGER.debug("Alarm created / updated : "+alarm)
                                 alarm = Alarm(
                                     current_state=state,
                                     alarm_pin=self.tydom_client.alarm_pin,
@@ -1021,8 +1021,8 @@ class TydomMessageHandler:
                                 await alarm.update()
 
                         except Exception as e:
-                            logger.error("Error in alarm parsing !")
-                            logger.error(e)
+                            _LOGGER.error("Error in alarm parsing !")
+                            _LOGGER.error(e)
                             pass
                     else:
                         pass
@@ -1038,12 +1038,12 @@ class TydomMessageHandler:
                         name_of_id = self.get_name_from_id(unique_id)
                         type_of_id = self.get_type_from_id(unique_id)
 
-                        logger.debug("======[ DEVICE INFOS ]======")
-                        logger.debug("ID {}".format(device_id))
-                        logger.debug("ENDPOINT ID {}".format(endpoint_id))
-                        logger.debug("Name {}".format(name_of_id))
-                        logger.debug("Type {}".format(type_of_id))
-                        logger.debug("==========================")
+                        _LOGGER.debug("======[ DEVICE INFOS ]======")
+                        _LOGGER.debug("ID {}".format(device_id))
+                        _LOGGER.debug("ENDPOINT ID {}".format(endpoint_id))
+                        _LOGGER.debug("Name {}".format(name_of_id))
+                        _LOGGER.debug("Type {}".format(type_of_id))
+                        _LOGGER.debug("==========================")
 
                         for elem in endpoint["cdata"]:
                             device_class_of_id = None
@@ -1135,8 +1135,8 @@ class TydomMessageHandler:
                                             await new_conso.update()
 
                     except Exception as e:
-                        logger.error("msg_cdata error in parsing !")
-                        logger.error(e)
+                        _LOGGER.error("msg_cdata error in parsing !")
+                        _LOGGER.error(e)
 
     # PUT response DIRTY parsing
     def parse_put_response(self, bytes_str, start=6):
@@ -1174,7 +1174,7 @@ class TydomMessageHandler:
         if len(device_type) != 0 and id in device_type.keys():
             deviceType = device_type[id]
         else:
-            logger.warn("%s not in dic device_type", id)
+            _LOGGER.warn("%s not in dic device_type", id)
 
         return deviceType
 
@@ -1184,7 +1184,7 @@ class TydomMessageHandler:
         if len(device_name) != 0 and id in device_name.keys():
             name = device_name[id]
         else:
-            logger.warn("%s not in dic device_name", id)
+            _LOGGER.warn("%s not in dic device_name", id)
         return name
 
 

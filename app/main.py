@@ -29,7 +29,6 @@ DATA_OPTIONS_PATH = "/data/options.json"
 ### GLOBALS
 tydom_client = None
 hassio = None
-tydom_mac = None
 
 
 def load_config():
