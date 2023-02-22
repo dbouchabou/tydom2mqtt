@@ -128,11 +128,6 @@ def loop_task():
     logger.info("Starting main loop_task")
     loop = asyncio.get_event_loop()
     loop.run_until_complete(hassio.connect())
-
-    # tasks = [
-    #     listen_tydom_forever(tydom_client)
-    # ]
-
     loop.run_until_complete(listen_tydom_forever(tydom_client))
 
 
@@ -152,12 +147,25 @@ async def listen_tydom_forever(tydom_client):
             while True:
                 # listener loop
                 try:
+                    # Wainting for income message from the websocket
                     incoming_bytes_str = await asyncio.wait_for(
                         tydom_client.connection.recv(),
                         timeout=tydom_client.refresh_timeout,
                     )
                     logger.debug("<<<<<<<<<< Receiving from tydom_client...")
                     logger.debug(incoming_bytes_str)
+
+                    logger.debug("Server said > %s".format(incoming_bytes_str))
+
+                    handler = TydomMessageHandler(
+                        incoming_bytes=incoming_bytes_str,
+                        tydom_client=tydom_client,
+                        mqtt_client=hassio,
+                    )
+                    try:
+                        await handler.incomingTriage()
+                    except Exception as e:
+                        logger.error("Tydom Message Handler exception : %s", e)
 
                 except (
                     asyncio.TimeoutError,
@@ -169,7 +177,6 @@ async def listen_tydom_forever(tydom_client):
                         await asyncio.wait_for(
                             pong, timeout=tydom_client.refresh_timeout
                         )
-                        # logger.debug('Ping OK, keeping connection alive...')
                         continue
                     except Exception as e:
                         logger.error(
@@ -180,18 +187,6 @@ async def listen_tydom_forever(tydom_client):
                         logger.error("Error: %s", e)
                         await asyncio.sleep(tydom_client.sleep_time)
                         break
-                logger.debug("Server said > %s".format(incoming_bytes_str))
-                incoming_bytes_str
-
-                handler = TydomMessageHandler(
-                    incoming_bytes=incoming_bytes_str,
-                    tydom_client=tydom_client,
-                    mqtt_client=hassio,
-                )
-                try:
-                    await handler.incomingTriage()
-                except Exception as e:
-                    logger.error("Tydom Message Handler exception : %s", e)
 
         except socket.gaierror:
             logger.info(

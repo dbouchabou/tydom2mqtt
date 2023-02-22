@@ -5,8 +5,9 @@ import os
 import ssl
 
 import websockets
-from logger import logger
 from requests.auth import HTTPDigestAuth
+
+from logger import logger
 
 # Thanks
 # https://stackoverflow.com/questions/49878953/issues-listening-incoming-messages-in-websocket-client-on-python-3-6
@@ -406,7 +407,7 @@ class TydomWebSocketClient:
     async def setup(self):
         """
         Sending heartbeat to server
-        Ping - pong messages to verify connection is alive adn data is always up to date
+        Ping - pong messages to verify connection is alive and data is always up to date
         """
         logger.info("Requesting 1st data...")
         await self.get_info()
