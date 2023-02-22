@@ -1,22 +1,14 @@
 #!/usr/bin/env python3
 import asyncio
-import time
-from datetime import datetime
-import os
-import sys
 import json
+import os
 import socket
+
 import websockets
 from logger import logger
-import logging
-
-# import uvloop
-
 from mqtt_client import MQTT_Hassio
 from tydomConnector import TydomWebSocketClient
 from tydomMessagehandler import TydomMessageHandler
-
-logger = logging.getLogger(__name__)
 
 # HASSIO ADDON
 logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -27,11 +19,8 @@ logger.info("STARTING TYDOM2MQTT")
 
 logger.info("Detecting environnement......")
 
-# uvloop.install()
-# logger.info('uvloop init OK')
-# DEFAULT VALUES
 
-
+### DEFAULT VALUES
 TYDOM_IP = "mediation.tydom.com"
 MQTT_HOST = "localhost"
 MQTT_PORT = 1883
@@ -41,6 +30,8 @@ MQTT_SSL = False
 TYDOM_ALARM_PIN = ""
 TYDOM_ALARM_HOME_ZONE = 1
 TYDOM_ALARM_NIGHT_ZONE = 2
+TYDOM_ALARM_PIN = ""
+###
 
 data_options_path = "/data/options.json"
 
@@ -97,8 +88,7 @@ try:
             logger.error("Parsing error %s", e)
 
 except FileNotFoundError:
-    logger.info(
-        f"No {data_options_path}, seems we are not in hassio addon mode.")
+    logger.info(f"No {data_options_path}, seems we are not in hassio addon mode.")
     # CREDENTIALS TYDOM
     TYDOM_MAC = os.getenv("TYDOM_MAC")  # MAC Address of Tydom Box
     # Local ip address, default to mediation.tydom.com for remote connexion if
@@ -120,10 +110,8 @@ except FileNotFoundError:
 
 
 tydom_client = TydomWebSocketClient(
-    mac=TYDOM_MAC,
-    host=TYDOM_IP,
-    password=TYDOM_PASSWORD,
-    alarm_pin=TYDOM_ALARM_PIN)
+    mac=TYDOM_MAC, host=TYDOM_IP, password=TYDOM_PASSWORD, alarm_pin=TYDOM_ALARM_PIN
+)
 hassio = MQTT_Hassio(
     broker_host=MQTT_HOST,
     port=MQTT_PORT,
@@ -186,7 +174,9 @@ async def listen_tydom_forever(tydom_client):
                     except Exception as e:
                         logger.error(
                             "TimeoutError or websocket error - retrying connection in %s seconds...".format(
-                                tydom_client.sleep_time))
+                                tydom_client.sleep_time
+                            )
+                        )
                         logger.error("Error: %s", e)
                         await asyncio.sleep(tydom_client.sleep_time)
                         break
@@ -206,7 +196,9 @@ async def listen_tydom_forever(tydom_client):
         except socket.gaierror:
             logger.info(
                 "Socket error - retrying connection in %s sec (Ctrl-C to quit)".format(
-                    tydom_client.sleep_time))
+                    tydom_client.sleep_time
+                )
+            )
             await asyncio.sleep(tydom_client.sleep_time)
             continue
         except ConnectionRefusedError:
