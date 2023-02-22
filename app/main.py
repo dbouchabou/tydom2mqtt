@@ -154,7 +154,7 @@ async def tydom_listener():
 
         logger.debug("Server said > %s".format(message))
 
-        message_handler(message)
+        await message_handler(message)
 
         # await asyncio.sleep(0)
 
@@ -171,7 +171,7 @@ async def listen_tydom_forever():
             logger.info("Tydom Client is connected to websocket and ready !")
             await tydom_client.setup()
 
-            tydom_listener()
+            await tydom_listener()
 
         except socket.gaierror:
             logger.info(
