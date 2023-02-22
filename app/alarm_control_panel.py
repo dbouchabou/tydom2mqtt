@@ -1,6 +1,6 @@
 import json
 
-from logger import logger
+from logger import _LOGGER
 from sensors import sensor
 
 alarm_topic = "alarm_control_panel/tydom/#"
@@ -58,8 +58,8 @@ class Alarm:
         try:
             await self.update_sensors()
         except Exception as e:
-            logger.error("Alarm sensors Error :")
-            logger.error(e)
+            _LOGGER.error("Alarm sensors Error :")
+            _LOGGER.error(e)
 
         self.state_topic = alarm_state_topic.format(
             id=self.id, state=self.current_state
@@ -71,19 +71,19 @@ class Alarm:
             self.mqtt.mqtt_client.publish(
                 self.config["json_attributes_topic"], self.attributes, qos=0
             )
-        logger.info(
+        _LOGGER.info(
             "Alarm created / updated : %s %s %s", self.name, self.id, self.current_state
         )
 
     async def update_sensors(self):
-        # logger.info('test sensors !')
+        # _LOGGER.info('test sensors !')
         for i, j in self.attributes.items():
             # if j == 'ON' and not 'alarm' in i:
             #     j = True
             # elif j == 'OFF' and not 'alarm' in i:
             #     j == False
             # sensor_name = "tydom_alarm_sensor_"+i
-            # logger.debug("name %s elem_name %s attributes_topic_from_device %s mqtt %s", sensor_name, i, self.config['json_attributes_topic'], self.mqtt)
+            # _LOGGER.debug("name %s elem_name %s attributes_topic_from_device %s mqtt %s", sensor_name, i, self.config['json_attributes_topic'], self.mqtt)
             if not i == "device_type" or not i == "id":
                 new_sensor = None
                 new_sensor = sensor(
@@ -101,7 +101,7 @@ class Alarm:
     async def put_alarm_state(
         tydom_client, device_id, alarm_id, home_zone, night_zone, asked_state=None
     ):
-        # logger.debug("%s %s %s %s", tydom_client, device_id, alarm_id, asked_state)
+        # _LOGGER.debug("%s %s %s %s", tydom_client, device_id, alarm_id, asked_state)
 
         value = None
         zone_id = None

@@ -7,7 +7,7 @@ import ssl
 import websockets
 from requests.auth import HTTPDigestAuth
 
-from logger import logger
+from logger import _LOGGER
 
 # Thanks
 # https://stackoverflow.com/questions/49878953/issues-listening-incoming-messages-in-websocket-client-on-python-3-6
@@ -15,7 +15,7 @@ from logger import logger
 
 class TydomWebSocketClient:
     def __init__(self, mac, password, alarm_pin=None, host="mediation.tydom.com"):
-        logger.info("Initialising TydomClient Class")
+        _LOGGER.info("Initialising TydomClient Class")
 
         self.password = password
         self.mac = mac
@@ -37,7 +37,7 @@ class TydomWebSocketClient:
 
         # Set Host, ssl context and prefix for remote or local connection
         if self.host == "mediation.tydom.com":
-            logger.info("Setting remote mode context.")
+            _LOGGER.info("Setting remote mode context.")
             self.remote_mode = True
             # self.ssl_context = None
             self.ssl_context = ssl._create_unverified_context()
@@ -45,17 +45,17 @@ class TydomWebSocketClient:
             self.ping_timeout = 40
 
         else:
-            logger.info("Setting local mode context.")
+            _LOGGER.info("Setting local mode context.")
             self.remote_mode = False
             self.ssl_context = ssl._create_unverified_context()
             self.cmd_prefix = ""
             self.ping_timeout = None
 
     async def connect(self):
-        logger.info('""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""')
-        logger.info("TYDOM WEBSOCKET CONNECTION INITIALISING....                     ")
+        _LOGGER.info('""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""')
+        _LOGGER.info("TYDOM WEBSOCKET CONNECTION INITIALISING....                     ")
 
-        logger.info("Building headers, getting 1st handshake and authentication....")
+        _LOGGER.info("Building headers, getting 1st handshake and authentication....")
 
         http_headers = {
             "Connection": "Upgrade",
@@ -78,14 +78,14 @@ class TydomWebSocketClient:
         # Close HTTPS Connection
         conn.close()
 
-        logger.debug("response headers")
-        logger.debug(res.headers)
-        logger.debug("response code")
-        logger.debug(res.getcode())
+        _LOGGER.debug("response headers")
+        _LOGGER.debug(res.headers)
+        _LOGGER.debug("response code")
+        _LOGGER.debug(res.getcode())
 
         # read response
-        logger.debug("response")
-        logger.debug(res.read())
+        _LOGGER.debug("response")
+        _LOGGER.debug(res.read())
         res.read()
 
         # if res.getcode() is not 101:
@@ -103,7 +103,7 @@ class TydomWebSocketClient:
         except AttributeError:
             pass
 
-        logger.info("Upgrading http connection to websocket....")
+        _LOGGER.info("Upgrading http connection to websocket....")
 
         if self.ssl_context is not None:
             websocket_ssl_context = self.ssl_context
@@ -111,10 +111,10 @@ class TydomWebSocketClient:
             websocket_ssl_context = True  # Verify certificate
 
         # outer loop restarted every time the connection fails
-        logger.info(
+        _LOGGER.info(
             "Attempting websocket connection with tydom hub......................."
         )
-        logger.info("Host Target : %s", self.host)
+        _LOGGER.info("Host Target : %s", self.host)
         """
             Connecting to webSocket server
             websockets.client.connect returns a WebSocketClientProtocol, which is used to send and receive messages
@@ -129,12 +129,12 @@ class TydomWebSocketClient:
 
             return self.connection
         except Exception as e:
-            logger.error("Exception when trying to connect with websocket !")
-            logger.error(e)
-            logger.error(
+            _LOGGER.error("Exception when trying to connect with websocket !")
+            _LOGGER.error(e)
+            _LOGGER.error(
                 f"wss://{self.host}:443/mediation/client?mac={self.mac}&appli=1"
             )
-            logger.error(websocket_headers)
+            _LOGGER.error(websocket_headers)
             exit()
 
     # Utils
@@ -162,7 +162,7 @@ class TydomWebSocketClient:
         )
 
     async def notify_alive(self, msg="OK"):
-        # logger.info('Connection Still Alive !')
+        # _LOGGER.info('Connection Still Alive !')
         pass
         # if self.sys_context == 'systemd':
         #     import sdnotify
@@ -170,7 +170,7 @@ class TydomWebSocketClient:
         #     #Notify systemd watchdog
         #     n = sdnotify.SystemdNotifier()
         #     n.notify("WATCHDOG=1")
-        #     # logger.info("Tydom HUB is still connected, systemd's watchdog notified...")
+        #     # _LOGGER.info("Tydom HUB is still connected, systemd's watchdog notified...")
 
     def add_poll_device_url(self, url):
         self.poll_device_urls.append(url)
@@ -182,7 +182,7 @@ class TydomWebSocketClient:
     # Send Generic  message
 
     async def send_message(self, method, msg):
-        # logger.debug("%s %s", method, msg)
+        # _LOGGER.debug("%s %s", method, msg)
 
         str = (
             self.cmd_prefix
@@ -193,14 +193,14 @@ class TydomWebSocketClient:
         )
         a_bytes = bytes(str, "ascii")
         if "pwd" not in msg:
-            logger.info(">>>>>>>>>> Sending to tydom client..... %s %s", method, msg)
+            _LOGGER.info(">>>>>>>>>> Sending to tydom client..... %s %s", method, msg)
         else:
-            logger.info(
+            _LOGGER.info(
                 ">>>>>>>>>> Sending to tydom client..... %s %s", method, "secret msg"
             )
 
         await self.connection.send(a_bytes)
-        # logger.debug(a_bytes)
+        # _LOGGER.debug(a_bytes)
         return 0
 
     # Give order (name + value) to endpoint
@@ -218,8 +218,8 @@ class TydomWebSocketClient:
             + "\r\n\r\n"
         )
         a_bytes = bytes(str_request, "ascii")
-        # logger.debug(a_bytes)
-        logger.info("Sending to tydom client..... %s %s", "PUT data", body)
+        # _LOGGER.debug(a_bytes)
+        _LOGGER.info("Sending to tydom client..... %s %s", "PUT data", body)
         await self.connection.send(a_bytes)
         return 0
 
@@ -240,7 +240,7 @@ class TydomWebSocketClient:
         # zones
 
         if self.alarm_pin is None:
-            logger.warn("TYDOM_ALARM_PIN not set !")
+            _LOGGER.warn("TYDOM_ALARM_PIN not set !")
             pass
         try:
             if zone_id is None:
@@ -274,17 +274,17 @@ class TydomWebSocketClient:
             )
 
             a_bytes = bytes(str_request, "ascii")
-            # logger.debug(a_bytes)
-            logger.info("Sending to tydom client..... %s %s", "PUT cdata", body)
+            # _LOGGER.debug(a_bytes)
+            _LOGGER.info("Sending to tydom client..... %s %s", "PUT cdata", body)
 
             try:
                 await self.connection.send(a_bytes)
                 return 0
             except BaseException:
-                logger.error("put_alarm_cdata ERROR !", exc_info=True)
-                logger.error(a_bytes)
+                _LOGGER.error("put_alarm_cdata ERROR !", exc_info=True)
+                _LOGGER.error(a_bytes)
         except BaseException:
-            logger.error("put_alarm_cdata ERROR !", exc_info=True)
+            _LOGGER.error("put_alarm_cdata ERROR !", exc_info=True)
 
     # Get some information on Tydom
 
@@ -295,7 +295,7 @@ class TydomWebSocketClient:
 
     # Refresh (all)
     async def post_refresh(self):
-        # logger.info("Refresh....")
+        # _LOGGER.info("Refresh....")
         msg_type = "/refresh/all"
         req = "POST"
         await self.send_message(method=req, msg=msg_type)
@@ -328,7 +328,7 @@ class TydomWebSocketClient:
         msg_type = "/ping"
         req = "GET"
         await self.send_message(method=req, msg=msg_type)
-        logger.info("****** ping !")
+        _LOGGER.info("****** ping !")
 
     # Get all devices metadata
 
@@ -390,13 +390,13 @@ class TydomWebSocketClient:
         Sending heartbeat to server
         Ping - pong messages to verify connection is alive and data is always up to date
         """
-        logger.info("Requesting 1st data...")
+        _LOGGER.info("Requesting 1st data...")
         await self.get_info()
-        logger.info("##################################")
-        logger.info("##################################")
+        _LOGGER.info("##################################")
+        _LOGGER.info("##################################")
         await self.post_refresh()
         await self.get_data()
-        # logger.info('Starting Heartbeating...')
+        # _LOGGER.info('Starting Heartbeating...')
         # while 1:
         #     await self.post_refresh()
         #     await asyncio.sleep(40)

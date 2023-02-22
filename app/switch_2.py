@@ -1,6 +1,6 @@
 import json
 
-from logger import logger
+from logger import _LOGGER
 
 switch_config_topic = "homeassistant/switch/tydom/{id}_{endpoint_id}/config"
 switch_state_topic = "homeassistant/switch/tydom/{id}/{endpoint_id}/state"
@@ -70,7 +70,7 @@ class Switch_2:
 
     async def setup(self):
         if self.mqtt is not None:
-            logger.debug("SWITCH 2 : START SETUP ")
+            _LOGGER.debug("SWITCH 2 : START SETUP ")
             self.mqtt.mqtt_client.publish(
                 (self.switch_config_topic).lower(),
                 json.dumps(self.entity),
@@ -78,19 +78,19 @@ class Switch_2:
                 retain=True,
             )  # sensor Config
 
-            logger.debug("SWITCH 2 : SETUP OK")
+            _LOGGER.debug("SWITCH 2 : SETUP OK")
 
     async def update(self):
         if self.mqtt is not None:
             await self.setup()  # Publish config
 
-            logger.debug("SWITCH 2 : START UPDATE ")
+            _LOGGER.debug("SWITCH 2 : START UPDATE ")
 
             self.mqtt.mqtt_client.publish(
                 self.switch_state_topic, self.attr["data_value"], qos=0, retain=True
             )  # Switch State
 
-            logger.info(
+            _LOGGER.info(
                 "Sensor created / updated : %s %s",
                 self.entity["unique_id"],
                 self.attr["data_value"],
@@ -98,6 +98,6 @@ class Switch_2:
 
     @staticmethod
     async def send(tydom_client, device_id, endpoint_id, name, value):
-        logger.info("%s %s %s", device_id, name, value)
+        _LOGGER.info("%s %s %s", device_id, name, value)
         if not (value == ""):
             await tydom_client.put_devices_data(device_id, endpoint_id, name, value)

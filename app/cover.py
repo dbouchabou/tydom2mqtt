@@ -1,6 +1,6 @@
 import json
 
-from logger import logger
+from logger import _LOGGER
 from sensors import sensor
 
 cover_command_topic = "cover/tydom/{id}/set_positionCmd"
@@ -85,8 +85,8 @@ class Cover:
         try:
             await self.update_sensors()
         except Exception as e:
-            logger.error("Cover sensors Error :")
-            logger.error(e)
+            _LOGGER.error("Cover sensors Error :")
+            _LOGGER.error(e)
 
         if self.mqtt is not None and "position" in self.attributes:
             self.mqtt.mqtt_client.publish(
@@ -104,16 +104,16 @@ class Cover:
                 self.config["json_attributes_topic"], self.attributes, qos=0
             )
 
-        logger.info("Cover created / updated : %s %s", self.name, self.id)
+        _LOGGER.info("Cover created / updated : %s %s", self.name, self.id)
 
         # update_pub = '(self.position_topic, self.current_position, qos=0, retain=True)'
         # return(update_pub)
 
     async def update_sensors(self):
-        # logger.debug('test sensors !')
+        # _LOGGER.debug('test sensors !')
         for i, j in self.attributes.items():
             # sensor_name = "tydom_alarm_sensor_"+i
-            # logger.debug("name %s elem_name %s attributes_topic_from_device %s mqtt %s"+sensor_name, i, self.config['json_attributes_topic'], self.mqtt)
+            # _LOGGER.debug("name %s elem_name %s attributes_topic_from_device %s mqtt %s"+sensor_name, i, self.config['json_attributes_topic'], self.mqtt)
             if not i == "device_type" or not i == "id":
                 new_sensor = None
                 new_sensor = sensor(
@@ -128,19 +128,19 @@ class Cover:
     # attributes_topic_from_device, mqtt=None):
 
     async def put_position(tydom_client, device_id, cover_id, position):
-        logger.info("%s %s %s", cover_id, "position", position)
+        _LOGGER.info("%s %s %s", cover_id, "position", position)
         if not (position == ""):
             await tydom_client.put_devices_data(
                 device_id, cover_id, "position", position
             )
 
     async def put_tilt(tydom_client, device_id, cover_id, tilt):
-        logger.info("%s %s %s", cover_id, "tilt", tilt)
+        _LOGGER.info("%s %s %s", cover_id, "tilt", tilt)
         if not (tilt == ""):
             await tydom_client.put_devices_data(device_id, cover_id, "slope", tilt)
 
     async def put_positionCmd(tydom_client, device_id, cover_id, positionCmd):
-        logger.info("%s %s %s", cover_id, "positionCmd", positionCmd)
+        _LOGGER.info("%s %s %s", cover_id, "positionCmd", positionCmd)
         if not (positionCmd == ""):
             await tydom_client.put_devices_data(
                 device_id, cover_id, "positionCmd", positionCmd

@@ -5,19 +5,19 @@ import os
 import socket
 
 import websockets
-from logger import logger
+from logger import _LOGGER
 from mqtt_client import MQTT_Hassio
 from tydomConnector import TydomWebSocketClient
 from tydomMessagehandler import TydomMessageHandler
 
 # HASSIO ADDON
-logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+_LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+_LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+_LOGGER.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-logger.info("STARTING TYDOM2MQTT")
+_LOGGER.info("STARTING TYDOM2MQTT")
 
-logger.info("Detecting environnement......")
+_LOGGER.info("Detecting environnement......")
 
 
 ### DEFAULT VALUES
@@ -37,18 +37,18 @@ data_options_path = "/data/options.json"
 
 try:
     with open(data_options_path) as f:
-        logger.info(
+        _LOGGER.info(
             f"{data_options_path} detected ! Hassio Addons Environnement : parsing options.json...."
         )
         try:
             data = json.load(f)
-            logger.debug(data)
+            _LOGGER.debug(data)
 
             # CREDENTIALS TYDOM
             if data["TYDOM_MAC"] != "":
                 TYDOM_MAC = data["TYDOM_MAC"]  # MAC Address of Tydom Box
             else:
-                logger.error("No Tydom MAC set")
+                _LOGGER.error("No Tydom MAC set")
                 exit()
 
             if data["TYDOM_IP"] != "":
@@ -57,7 +57,7 @@ try:
             if data["TYDOM_PASSWORD"] != "":
                 TYDOM_PASSWORD = data["TYDOM_PASSWORD"]  # Tydom password
             else:
-                logger.error("No Tydom password set")
+                _LOGGER.error("No Tydom password set")
                 exit()
 
             if data["TYDOM_ALARM_PIN"] != "":
@@ -84,11 +84,24 @@ try:
             if (data["MQTT_SSL"] == "true") or (data["MQTT_SSL"]):
                 MQTT_SSL = True
 
+            if "log_level" in data.keys():
+                log_level = str(data["log_level"]).upper()
+
+                if log_level in [
+                    "NOTSET",
+                    "DEBUG",
+                    "INFO",
+                    "WARNING",
+                    "ERROR",
+                    "CRITICAL",
+                ]:
+                    _LOGGER.setLevel(log_level)
+
         except Exception as e:
-            logger.error("Parsing error %s", e)
+            _LOGGER.error("Parsing error %s", e)
 
 except FileNotFoundError:
-    logger.info(f"No {data_options_path}, seems we are not in hassio addon mode.")
+    _LOGGER.info(f"No {data_options_path}, seems we are not in hassio addon mode.")
     # CREDENTIALS TYDOM
     TYDOM_MAC = os.getenv("TYDOM_MAC")  # MAC Address of Tydom Box
     # Local ip address, default to mediation.tydom.com for remote connexion if
@@ -125,7 +138,7 @@ hassio = MQTT_Hassio(
 
 
 def loop_task():
-    logger.info("Starting main loop_task")
+    _LOGGER.info("Starting main loop_task")
     loop = asyncio.get_event_loop()
     loop.run_until_complete(hassio.connect())
     loop.run_until_complete(listen_tydom_forever())
@@ -140,19 +153,19 @@ async def message_handler(message):
         )
         await handler.incomingTriage()
     except Exception as e:
-        logger.error("Tydom Message Handler exception : %s", e)
+        _LOGGER.error("Tydom Message Handler exception : %s", e)
 
 
 async def tydom_listener():
     # listener loop
     while True:
-        logger.info("Start Listen TYDOM Data")
+        _LOGGER.info("Start Listen TYDOM Data")
         # Wainting for income message from the websocket
         message = await tydom_client.connection.recv()
-        logger.debug("<<<<<<<<<< Receiving from tydom_client...")
-        logger.debug(message)
+        _LOGGER.debug("<<<<<<<<<< Receiving from tydom_client...")
+        _LOGGER.debug(message)
 
-        logger.debug("Server said > %s".format(message))
+        _LOGGER.debug("Server said > %s".format(message))
 
         await message_handler(message)
 
@@ -168,13 +181,13 @@ async def listen_tydom_forever():
         # # outer loop restarted every time the connection fails
         try:
             await tydom_client.connect()
-            logger.info("Tydom Client is connected to websocket and ready !")
+            _LOGGER.info("Tydom Client is connected to websocket and ready !")
             await tydom_client.setup()
 
             await tydom_listener()
 
         except socket.gaierror:
-            logger.info(
+            _LOGGER.info(
                 "Socket error - retrying connection in %s sec (Ctrl-C to quit)".format(
                     tydom_client.sleep_time
                 )
@@ -182,10 +195,10 @@ async def listen_tydom_forever():
             await asyncio.sleep(tydom_client.sleep_time)
             continue
         except ConnectionRefusedError:
-            logger.error(
+            _LOGGER.error(
                 "Nobody seems to listen to this endpoint. Please check the URL."
             )
-            logger.error(
+            _LOGGER.error(
                 "Retrying connection in %s sec (Ctrl-C to quit)".format(
                     tydom_client.sleep_time
                 )

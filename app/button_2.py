@@ -1,6 +1,6 @@
 import json
 
-from logger import logger
+from logger import _LOGGER
 
 button_config_topic = "homeassistant/button/tydom/{id}_{endpoint_id}/config"
 button_attributes_topic = "homeassistant/button/tydom/{id}/{endpoint_id}/attributes"
@@ -46,7 +46,7 @@ class Button_2:
 
     async def setup(self):
         if self.mqtt is not None:
-            logger.debug("BUTTON 2 : START SETUP ")
+            _LOGGER.debug("BUTTON 2 : START SETUP ")
 
             self.mqtt.mqtt_client.publish(
                 (self.button_config_topic).lower(),
@@ -55,22 +55,22 @@ class Button_2:
                 retain=True,
             )  # sensor Config
 
-            logger.debug("BUTTON SENSOR 2 : SETUP OK")
+            _LOGGER.debug("BUTTON SENSOR 2 : SETUP OK")
 
     async def update(self):
         if self.mqtt is not None:
             await self.setup()  # Publish config
 
-            logger.debug("BUTTON 2 : START UPDATE ")
+            _LOGGER.debug("BUTTON 2 : START UPDATE ")
 
             try:
                 self.mqtt.mqtt_client.publish(
                     self.button_command_topic, "PRESS", qos=0
                 )  # Button State
             except Exception as e:
-                logger.error("on subscribe ERROR : %s", e)
+                _LOGGER.error("on subscribe ERROR : %s", e)
 
-            logger.info(
+            _LOGGER.info(
                 "Sensor created / updated : %s %s",
                 self.entity["unique_id"],
                 self.attr["data_value"],

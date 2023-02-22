@@ -1,8 +1,8 @@
 import json
 
-from logger import logger
+from logger import _LOGGER
 
-# logger = logging.getLogger(__name__)
+# _LOGGER = logging.getLogger(__name__)
 light_config_topic = "homeassistant/light/tydom/{id}_{endpoint_id}/config"
 light_state_topic = "homeassistant/light/tydom/{id}/{endpoint_id}/state"
 light_attributes_topic = "homeassistant/light/tydom/{id}/{endpoint_id}/attributes"
@@ -72,7 +72,7 @@ class Light_2:
 
     async def setup(self):
         if self.mqtt is not None:
-            logger.debug("LIGHT 2 : START SETUP ")
+            _LOGGER.debug("LIGHT 2 : START SETUP ")
             self.mqtt.mqtt_client.publish(
                 (self.light_config_topic).lower(),
                 json.dumps(self.entity),
@@ -80,13 +80,13 @@ class Light_2:
                 retain=True,
             )  # sensor Config
 
-            logger.debug("LIGHT 2 : SETUP OK")
+            _LOGGER.debug("LIGHT 2 : SETUP OK")
 
     async def update(self):
         if self.mqtt is not None:
             await self.setup()  # Publish config
 
-            logger.debug("LIGHT 2 : START UPDATE ")
+            _LOGGER.debug("LIGHT 2 : START UPDATE ")
 
             # Turn data integer values into state values
             if self.attr["data_value"] == 100:
@@ -98,7 +98,7 @@ class Light_2:
                 self.light_state_topic, self.attr["data_value"], qos=0, retain=True
             )  # light State
 
-            logger.info(
+            _LOGGER.info(
                 "Sensor created / updated : %s %s",
                 self.entity["unique_id"],
                 self.attr["data_value"],
@@ -106,6 +106,6 @@ class Light_2:
 
     @staticmethod
     async def send(tydom_client, device_id, endpoint_id, name, value):
-        logger.info("%s %s %s", device_id, name, value)
+        _LOGGER.info("%s %s %s", device_id, name, value)
         if not (value == ""):
             await tydom_client.put_devices_data(device_id, endpoint_id, name, value)

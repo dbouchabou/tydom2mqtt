@@ -1,6 +1,6 @@
 import json
 
-from logger import logger
+from logger import _LOGGER
 
 sensor_topic = "sensor/tydom/#"
 sensor_config_topic = "homeassistant/sensor/tydom/{id}/config"
@@ -29,7 +29,7 @@ class sensor:
         state_dict = {}
         state_dict[elem_name] = self.elem_value
         self.attributes = state_dict
-        # logger.debug(self.attributes)
+        # _LOGGER.debug(self.attributes)
 
         # self.json_attributes_topic = attributes_topic_from_device #State
         # extracted from json, but it will make sensor not in payload to be
@@ -167,7 +167,7 @@ class sensor:
                 (self.config_topic).lower(), json.dumps(self.config), qos=0, retain=True
             )  # sensor Config
 
-        # logger.debug("CONFIG : %s %s",(self.config_topic).lower(), json.dumps(self.config))
+        # _LOGGER.debug("CONFIG : %s %s",(self.config_topic).lower(), json.dumps(self.config))
 
     async def update(self):
         # 3 items are necessary :
@@ -184,18 +184,18 @@ class sensor:
             await self.setup()  # Publish config
             # Publish state json to state topic
             if self.mqtt is not None:
-                # logger.debug("%s %s", self.json_attributes_topic, self.attributes)
+                # _LOGGER.debug("%s %s", self.json_attributes_topic, self.attributes)
                 # self.mqtt.mqtt_client.publish(self.json_attributes_topic,
                 # self.attributes, qos=0) #sensor json State
                 self.mqtt.mqtt_client.publish(
                     self.json_attributes_topic, self.elem_value, qos=0
                 )  # sensor State
             if not self.binary:
-                logger.info(
+                _LOGGER.info(
                     "Sensor created / updated : %s %s", self.name, self.elem_value
                 )
             else:
-                logger.info(
+                _LOGGER.info(
                     "Binary sensor created / updated : %s %s",
                     self.name,
                     self.elem_value,

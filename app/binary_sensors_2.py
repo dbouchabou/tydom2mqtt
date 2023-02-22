@@ -1,6 +1,6 @@
 import json
 
-from logger import logger
+from logger import _LOGGER
 
 sensor_config_topic = "homeassistant/binary_sensor/tydom/{id}_{endpoint_id}/config"
 sensor_topic = "homeassistant/binary_sensor/tydom/{id}/{endpoint_id}/state"
@@ -56,7 +56,7 @@ class Binary_Sensor_2:
 
     async def setup(self):
         if self.mqtt is not None:
-            logger.debug("BINARY SENSOR 2 : START SETUP ")
+            _LOGGER.debug("BINARY SENSOR 2 : START SETUP ")
 
             self.mqtt.mqtt_client.publish(
                 (self.sensor_config_topic).lower(),
@@ -65,13 +65,13 @@ class Binary_Sensor_2:
                 retain=True,
             )  # sensor Config
 
-            logger.debug("BINARY SENSOR 2 : SETUP OK")
+            _LOGGER.debug("BINARY SENSOR 2 : SETUP OK")
 
     async def update(self):
         if self.mqtt is not None:
             await self.setup()  # Publish config
 
-            logger.debug("BINARY SENSOR 2 : START UPDATE ")
+            _LOGGER.debug("BINARY SENSOR 2 : START UPDATE ")
 
             if self.attr["data_value"] == True:
                 self.attr["data_value"] = "ON"
@@ -82,7 +82,7 @@ class Binary_Sensor_2:
                 self.sensor_topic, self.attr["data_value"], qos=0
             )  # sensor State
 
-            logger.info(
+            _LOGGER.info(
                 "Sensor created / updated : %s %s",
                 self.entity["unique_id"],
                 self.attr["data_value"],
