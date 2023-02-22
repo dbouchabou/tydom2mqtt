@@ -29,9 +29,11 @@ DATA_OPTIONS_PATH = "/data/options.json"
 ### GLOBALS
 tydom_client = None
 hassio = None
+tydom_mac = None
 
 
 def load_config():
+    config = {}
     try:
         with open(DATA_OPTIONS_PATH) as f:
             _LOGGER.info(
@@ -42,44 +44,48 @@ def load_config():
                 _LOGGER.debug(data)
 
                 # CREDENTIALS TYDOM
-                if data["TYDOM_MAC"] != "":
-                    TYDOM_MAC = data["TYDOM_MAC"]  # MAC Address of Tydom Box
+                if "TYDOM_MAC" in data.keys():
+                    config["TYDOM_MAC"] = data["TYDOM_MAC"]  # MAC Address of Tydom Box
                 else:
                     _LOGGER.error("No Tydom MAC set")
                     exit()
 
-                if data["TYDOM_IP"] != "":
-                    TYDOM_IP = data["TYDOM_IP"]
+                if "TYDOM_IP" in data.keys():
+                    config["TYDOM_IP"] = data["TYDOM_IP"]
 
-                if data["TYDOM_PASSWORD"] != "":
-                    TYDOM_PASSWORD = data["TYDOM_PASSWORD"]  # Tydom password
+                if "TYDOM_PASSWORD" in data.keys():
+                    config["TYDOM_PASSWORD"] = data["TYDOM_PASSWORD"]  # Tydom password
                 else:
                     _LOGGER.error("No Tydom password set")
                     exit()
 
-                if data["TYDOM_ALARM_PIN"] != "":
-                    TYDOM_ALARM_PIN = data["TYDOM_ALARM_PIN"]
+                if "TYDOM_ALARM_PIN" in data.keys():
+                    config["TYDOM_ALARM_PIN"] = data["TYDOM_ALARM_PIN"]
 
-                if data["TYDOM_ALARM_HOME_ZONE"] != "":
-                    TYDOM_ALARM_HOME_ZONE = data["TYDOM_ALARM_HOME_ZONE"]
-                if data["TYDOM_ALARM_NIGHT_ZONE"] != "":
-                    TYDOM_ALARM_NIGHT_ZONE = data["TYDOM_ALARM_NIGHT_ZONE"]
+                if "TYDOM_ALARM_HOME_ZONE" in data.keys():
+                    config["TYDOM_ALARM_HOME_ZONE"] = data["TYDOM_ALARM_HOME_ZONE"]
+
+                if "TYDOM_ALARM_NIGHT_ZONE" in data.keys():
+                    config["TYDOM_ALARM_NIGHT_ZONE"] = data["TYDOM_ALARM_NIGHT_ZONE"]
 
                 # CREDENTIALS MQTT
-                if data["MQTT_HOST"] != "":
-                    MQTT_HOST = data["MQTT_HOST"]
+                if "MQTT_HOST" in data.keys():
+                    config["MQTT_HOST"] = data["MQTT_HOST"]
 
-                if data["MQTT_USER"] != "":
-                    MQTT_USER = data["MQTT_USER"]
+                if "MQTT_USER" in data.keys():
+                    config["MQTT_USER"] = data["MQTT_USER"]
 
-                if data["MQTT_PASSWORD"] != "":
-                    MQTT_PASSWORD = data["MQTT_PASSWORD"]
+                if "MQTT_PASSWORD" in data.keys():
+                    config["MQTT_PASSWORD"] = data["MQTT_PASSWORD"]
 
-                if data["MQTT_PORT"] != 1883:
-                    MQTT_PORT = data["MQTT_PORT"]
+                if "MQTT_PORT" in data.keys():
+                    config["MQTT_PORT"] = data["MQTT_PORT"]
 
-                if (data["MQTT_SSL"] == "true") or (data["MQTT_SSL"]):
-                    MQTT_SSL = True
+                if "MQTT_SSL" in data.keys():
+                    if "MQTT_SSL" == "true":
+                        config["MQTT_SSL"] = True
+                    else:
+                        config["MQTT_SSL"] = False
 
                 if "log_level" in data.keys():
                     log_level = str(data["log_level"]).upper()
@@ -94,29 +100,31 @@ def load_config():
                     ]:
                         _LOGGER.setLevel(log_level)
 
+                return config
+
             except Exception as e:
                 _LOGGER.error("Parsing error %s", e)
 
     except FileNotFoundError:
-        _LOGGER.info(f"No {data_options_path}, seems we are not in hassio addon mode.")
+        _LOGGER.info(f"No {DATA_OPTIONS_PATH}, seems we are not in hassio addon mode.")
         # CREDENTIALS TYDOM
-        TYDOM_MAC = os.getenv("TYDOM_MAC")  # MAC Address of Tydom Box
+        config["TYDOM_MAC"] = os.getenv("TYDOM_MAC")  # MAC Address of Tydom Box
         # Local ip address, default to mediation.tydom.com for remote connexion if
         # not specified
-        TYDOM_IP = os.getenv("TYDOM_IP", "mediation.tydom.com")
-        TYDOM_PASSWORD = os.getenv("TYDOM_PASSWORD")  # Tydom password
-        TYDOM_ALARM_PIN = os.getenv("TYDOM_ALARM_PIN")
-        TYDOM_ALARM_HOME_ZONE = os.getenv("TYDOM_ALARM_HOME_ZONE", 1)
-        TYDOM_ALARM_NIGHT_ZONE = os.getenv("TYDOM_ALARM_NIGHT_ZONE", 2)
+        config["TYDOM_IP"] = os.getenv("TYDOM_IP", "mediation.tydom.com")
+        config["TYDOM_PASSWORD"] = os.getenv("TYDOM_PASSWORD")  # Tydom password
+        config["TYDOM_ALARM_PIN"] = os.getenv("TYDOM_ALARM_PIN")
+        config["TYDOM_ALARM_HOME_ZONE"] = os.getenv("TYDOM_ALARM_HOME_ZONE", 1)
+        config["TYDOM_ALARM_NIGHT_ZONE"] = os.getenv("TYDOM_ALARM_NIGHT_ZONE", 2)
 
         # CREDENTIALS MQTT
-        MQTT_HOST = os.getenv("MQTT_HOST", "localhost")
-        MQTT_USER = os.getenv("MQTT_USER", "")
-        MQTT_PASSWORD = os.getenv("MQTT_PASSWORD", "")
+        config["MQTT_HOST"] = os.getenv("MQTT_HOST", "localhost")
+        config["MQTT_USER"] = os.getenv("MQTT_USER", "")
+        config["MQTT_PASSWORD"] = os.getenv("MQTT_PASSWORD", "")
 
         # 1883 #1884 for websocket without SSL
-        MQTT_PORT = os.getenv("MQTT_PORT", 1883)
-        MQTT_SSL = os.getenv("MQTT_SSL", False)
+        config["MQTT_PORT"] = os.getenv("MQTT_PORT", 1883)
+        config["MQTT_SSL"] = os.getenv("MQTT_SSL", False)
 
 
 def loop_task():
@@ -200,19 +208,23 @@ if __name__ == "__main__":
 
     _LOGGER.info("Detecting environnement......")
 
-    load_config()
+    config = load_config()
 
     tydom_client = TydomWebSocketClient(
-        mac=TYDOM_MAC, host=TYDOM_IP, password=TYDOM_PASSWORD, alarm_pin=TYDOM_ALARM_PIN
+        mac=config["TYDOM_MAC"],
+        host=config["TYDOM_IP"],
+        password=config["TYDOM_PASSWORD"],
+        alarm_pin=config["TYDOM_ALARM_PIN"],
     )
+
     hassio = MQTT_Hassio(
-        broker_host=MQTT_HOST,
-        port=MQTT_PORT,
-        user=MQTT_USER,
-        password=MQTT_PASSWORD,
-        mqtt_ssl=MQTT_SSL,
-        home_zone=TYDOM_ALARM_HOME_ZONE,
-        night_zone=TYDOM_ALARM_NIGHT_ZONE,
+        broker_host=config["MQTT_HOST"],
+        port=config["MQTT_PORT"],
+        user=config["MQTT_USER"],
+        password=config["MQTT_PASSWORD"],
+        mqtt_ssl=config["MQTT_SSL"],
+        home_zone=config["TYDOM_ALARM_HOME_ZONE"],
+        night_zone=config["TYDOM_ALARM_NIGHT_ZONE"],
         tydom=tydom_client,
     )
 
