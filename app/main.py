@@ -193,7 +193,7 @@ async def listen_tydom_forever():
             logger.info("Tydom Client is connected to websocket and ready !")
             await tydom_client.setup()
 
-            tydom_listener(tydom_client)
+            tydom_listener()
 
         except socket.gaierror:
             logger.info(
