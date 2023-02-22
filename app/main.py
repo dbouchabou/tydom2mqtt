@@ -128,7 +128,7 @@ def loop_task():
     logger.info("Starting main loop_task")
     loop = asyncio.get_event_loop()
     loop.run_until_complete(hassio.connect())
-    loop.run_until_complete(listen_tydom_forever(tydom_client))
+    loop.run_until_complete(listen_tydom_forever())
 
 
 async def message_handler(message):
