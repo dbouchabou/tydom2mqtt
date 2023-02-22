@@ -20,24 +20,15 @@ TYDOM_ALARM_PIN = ""
 TYDOM_ALARM_HOME_ZONE = 1
 TYDOM_ALARM_NIGHT_ZONE = 2
 TYDOM_ALARM_PIN = ""
+TYDOM_MAC = ""
+TYDOM_PASSWORD = ""
 ###
 
 DATA_OPTIONS_PATH = "/data/options.json"
 
-
-tydom_client = TydomWebSocketClient(
-    mac=TYDOM_MAC, host=TYDOM_IP, password=TYDOM_PASSWORD, alarm_pin=TYDOM_ALARM_PIN
-)
-hassio = MQTT_Hassio(
-    broker_host=MQTT_HOST,
-    port=MQTT_PORT,
-    user=MQTT_USER,
-    password=MQTT_PASSWORD,
-    mqtt_ssl=MQTT_SSL,
-    home_zone=TYDOM_ALARM_HOME_ZONE,
-    night_zone=TYDOM_ALARM_NIGHT_ZONE,
-    tydom=tydom_client,
-)
+### GLOBALS
+tydom_client = None
+hassio = None
 
 
 def load_config():
@@ -208,5 +199,21 @@ if __name__ == "__main__":
     _LOGGER.info("STARTING TYDOM2MQTT")
 
     _LOGGER.info("Detecting environnement......")
+
+    load_config()
+
+    tydom_client = TydomWebSocketClient(
+        mac=TYDOM_MAC, host=TYDOM_IP, password=TYDOM_PASSWORD, alarm_pin=TYDOM_ALARM_PIN
+    )
+    hassio = MQTT_Hassio(
+        broker_host=MQTT_HOST,
+        port=MQTT_PORT,
+        user=MQTT_USER,
+        password=MQTT_PASSWORD,
+        mqtt_ssl=MQTT_SSL,
+        home_zone=TYDOM_ALARM_HOME_ZONE,
+        night_zone=TYDOM_ALARM_NIGHT_ZONE,
+        tydom=tydom_client,
+    )
 
     loop_task()
