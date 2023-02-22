@@ -146,6 +146,7 @@ async def message_handler(message):
 async def tydom_listener():
     # listener loop
     while True:
+        logger.info("Start Listen TYDOM Data")
         # Wainting for income message from the websocket
         message = await tydom_client.connection.recv()
         logger.debug("<<<<<<<<<< Receiving from tydom_client...")
