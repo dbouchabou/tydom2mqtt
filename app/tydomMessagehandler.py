@@ -592,6 +592,14 @@ class TydomMessageHandler:
                             attr["entity_name"] = "Switch"
                             attr["cmd_label"] = "levelCmd"
 
+                        if attr["data_name"] == "energyTotIndexGas":
+                            attr["type"] = "sensor"
+                            attr["unit_of_measurement"] = "dm³"
+                            attr["device_class"] = "gas"
+                            attr["state_class"] = "measurement"
+                            attr["model"] = "Sensor"
+                            attr["entity_name"] = "Total Gaz"
+
                         if attr["type"] == "sensor":
                             device = Sensor_2(attr, self.mqtt_client)
 
