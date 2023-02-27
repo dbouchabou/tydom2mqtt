@@ -594,9 +594,9 @@ class TydomMessageHandler:
 
                         if attr["data_name"] == "energyTotIndexGas":
                             attr["type"] = "sensor"
-                            attr["unit_of_measurement"] = "dm³"
+                            attr["unit_of_measurement"] = "L"
                             attr["device_class"] = "gas"
-                            attr["state_class"] = "measurement"
+                            attr["state_class"] = "total_increasing"
                             attr["model"] = "Sensor"
                             attr["entity_name"] = "Total Gaz"
 
