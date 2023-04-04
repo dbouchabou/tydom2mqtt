@@ -3,7 +3,7 @@ import json
 from logger import _LOGGER
 
 sensor_config_topic = "homeassistant/sensor/tydom/{id}_{endpoint_id}/config"
-sensor_topic = "homeassistant/sensor/tydom/{id}/{endpoint_id}/state"
+sensor_topic = "homeassistant/sensor/tydom/{id}/{endpoint_id}_{data_name}/state"
 
 # sensor_config_topic = "homeassistant/sensor/tydom/{id}/config"
 # sensor_topic = "homeassistant/sensor/tydom/{id}/state"
@@ -18,7 +18,9 @@ class Sensor_2:
             id=self.attr["device_id"], endpoint_id=self.attr["endpoint_id"]
         )
         self.sensor_config_topic = sensor_config_topic.format(
-            id=self.attr["device_id"], endpoint_id=self.attr["endpoint_id"]
+            id=self.attr["device_id"],
+            endpoint_id=self.attr["endpoint_id"],
+            data_name=self.attr["data_name"],
         )
 
         # self.sensor_topic = sensor_topic.format(id = self.attr['device_id'])
