@@ -15,12 +15,12 @@ class Sensor_2:
         self.mqtt = mqtt
 
         self.sensor_topic = sensor_topic.format(
-            id=self.attr["device_id"], endpoint_id=self.attr["endpoint_id"]
-        )
-        self.sensor_config_topic = sensor_config_topic.format(
             id=self.attr["device_id"],
             endpoint_id=self.attr["endpoint_id"],
             data_name=self.attr["data_name"],
+        )
+        self.sensor_config_topic = sensor_config_topic.format(
+            id=self.attr["device_id"], endpoint_id=self.attr["endpoint_id"]
         )
 
         # self.sensor_topic = sensor_topic.format(id = self.attr['device_id'])
