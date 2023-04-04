@@ -3,7 +3,7 @@ import json
 from logger import _LOGGER
 
 sensor_config_topic = "homeassistant/sensor/tydom/{id}_{endpoint_id}/config"
-sensor_topic = "homeassistant/sensor/tydom/{id}/{endpoint_id}_{data_name}/state"
+sensor_topic = "homeassistant/sensor/tydom/{id}/{endpoint_id}/{data_name}/state"
 
 # sensor_config_topic = "homeassistant/sensor/tydom/{id}/config"
 # sensor_topic = "homeassistant/sensor/tydom/{id}/state"
