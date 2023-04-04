@@ -573,17 +573,17 @@ class TydomMessageHandler:
                             attr["entity_name"] = name + "Active power"
 
                         # Tywatt 5400
-                        elif attr["data_name"] == "energyInstantTi1I":
-                            attr["type"] = "sensor"
-                            attr["unit_of_measurement"] = "A"
-                            attr["device_class"] = "current"
-                            attr["state_class"] = "measurement"
-                            attr["model"] = "Sensor"
+                        # elif attr["data_name"] == "energyInstantTi1I":
+                        #    attr["type"] = "sensor"
+                        #    attr["unit_of_measurement"] = "A"
+                        #    attr["device_class"] = "current"
+                        #    attr["state_class"] = "measurement"
+                        #    attr["model"] = "Sensor"
 
-                            if "Ti1" in attr["data_name"]:
-                                name = "Ti1 "
+                        #    if "Ti1" in attr["data_name"]:
+                        #        name = "Ti1 "
 
-                            attr["entity_name"] = name + "RMS current"
+                        #    attr["entity_name"] = name + "RMS current"
 
                         # plugCmd
                         elif attr["data_name"] == "plugCmd":
