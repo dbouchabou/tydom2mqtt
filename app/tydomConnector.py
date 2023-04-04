@@ -396,7 +396,3 @@ class TydomWebSocketClient:
         _LOGGER.info("##################################")
         await self.post_refresh()
         await self.get_data()
-        # _LOGGER.info('Starting Heartbeating...')
-        # while 1:
-        #     await self.post_refresh()
-        #     await asyncio.sleep(40)
